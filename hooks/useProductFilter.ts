@@ -10,6 +10,9 @@ export function useProductFilter(products: Product[]) {
     if (selectedCategory === 'all') {
       return products;
     }
+    if (selectedCategory === 'sale') {
+      return products.filter((p) => p.onSale === true);
+    }
     return products.filter((p) => p.category === selectedCategory);
   }, [products, selectedCategory]);
 

@@ -81,6 +81,7 @@ body {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -91,6 +92,7 @@ body {
     transform: translateY(30px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -102,6 +104,7 @@ body {
     transform: translateY(-30px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -113,6 +116,7 @@ body {
     transform: scale(0.9);
     opacity: 0;
   }
+
   to {
     transform: scale(1);
     opacity: 1;
@@ -120,9 +124,12 @@ body {
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-10px);
   }
@@ -227,7 +234,7 @@ nav {
 }
 
 /* Ensure body content is contained */
-body > * {
+body>* {
   max-width: 100vw;
   overflow-x: hidden;
 }
@@ -266,7 +273,7 @@ section#home {
   max-width: 100vw;
 }
 
-section#home > .container {
+section#home>.container {
   max-width: 1280px;
 }
 
@@ -303,3 +310,428 @@ button[aria-label='Toggle WhatsApp widget'] {
   }
 }
 
+/* ========================================
+   ANNOUNCEMENT BAR STYLES
+   ======================================== */
+.announcement-bar {
+  background: linear-gradient(90deg, #c5a059 0%, #d4b068 50%, #c5a059 100%);
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 8px 0;
+}
+
+.announcement-track {
+  display: inline-flex;
+  animation: scrollAnnouncement 25s linear infinite;
+  gap: 5rem;
+}
+
+@keyframes scrollAnnouncement {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.announcement-text {
+  font-family: 'Inter', var(--font-inter), sans-serif;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #000;
+  padding: 0 2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ========================================
+   HERO GRADIENT STYLES
+   ======================================== */
+.hero-gradient-section {
+  min-height: auto;
+  padding-top: 120px;
+  padding-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .hero-gradient-section {
+    padding-top: 140px;
+  }
+}
+
+.hero-gradient {
+  background: linear-gradient(180deg,
+      #1e3a5f 0%,
+      #264b7a 20%,
+      #2d5a94 40%,
+      #3a6fad 60%,
+      #5a8fc7 80%,
+      #a8c8e8 100%);
+}
+
+.hero-title {
+  font-family: var(--font-playfair), 'Playfair Display', serif;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #e7d8a6;
+  font-size: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .hero-title {
+    font-size: 3.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-title {
+    font-size: 4rem;
+  }
+}
+
+.hero-subtext {
+  font-family: var(--font-lora), 'Lora', serif;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.8;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .hero-subtext {
+    font-size: 1.2rem;
+  }
+}
+
+/* ========================================
+   LOGO TEXT STYLES
+   ======================================== */
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.brand-name {
+  font-family: var(--font-cinzel), 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: #c5a059;
+  letter-spacing: 0.05em;
+}
+
+@media (min-width: 768px) {
+  .brand-name {
+    font-size: 20px;
+  }
+}
+
+.brand-sub {
+  font-family: var(--font-cinzel), 'Cinzel', serif;
+  font-weight: 600;
+  font-size: 8px;
+  color: #9ca3af;
+  text-align: center;
+  letter-spacing: 0.1em;
+}
+
+@media (min-width: 768px) {
+  .brand-sub {
+    font-size: 10px;
+  }
+}
+
+/* ========================================
+   FLASH SALE CAROUSEL STYLES
+   ======================================== */
+.carousel-slide {
+  min-width: 100%;
+}
+
+.sale-banner {
+  height: 280px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .sale-banner {
+    height: 320px;
+  }
+}
+
+.floating-decor {
+  position: absolute;
+  font-size: 2rem;
+  animation: floatBounce 3s ease-in-out infinite;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+@keyframes floatBounce {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-15px) rotate(10deg);
+  }
+}
+
+.falling-leaf {
+  position: absolute;
+  top: -20px;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+  border-radius: 0 50% 50% 50%;
+  transform: rotate(45deg);
+  animation: fallAndSway 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes fallAndSway {
+  0% {
+    top: -20px;
+    transform: rotate(45deg) translateX(0);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.7;
+  }
+
+  50% {
+    transform: rotate(45deg) translateX(30px);
+  }
+
+  100% {
+    top: 100%;
+    transform: rotate(405deg) translateX(-30px);
+    opacity: 0;
+  }
+}
+
+.carousel-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.4);
+  transition: all 0.3s ease;
+}
+
+.carousel-dot.active {
+  background: white !important;
+  width: 2.5rem !important;
+}
+
+/* ========================================
+   MOBILE CATEGORY STRIP STYLES
+   ======================================== */
+.mobile-category-strip {
+  display: none;
+  background: white;
+  padding: 12px 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.mobile-category-strip::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .mobile-category-strip {
+    display: flex;
+    gap: 16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+.category-icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 64px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.icon-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+}
+
+.icon-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.category-icon-item span {
+  font-size: 11px;
+  font-weight: 500;
+  color: #374151;
+  text-align: center;
+}
+
+.sale-icon .icon-circle {
+  background: linear-gradient(135deg, #ef4444 0%, #f97316 100%);
+  border-color: #ef4444;
+  animation: salePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes salePulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(239, 68, 68, 0.5);
+  }
+
+  50% {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.8), 0 0 30px rgba(239, 68, 68, 0.4);
+  }
+}
+
+.sale-icon {
+  animation: saleFlash 1.5s ease-in-out infinite;
+}
+
+@keyframes saleFlash {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* ========================================
+   SALE CATEGORY BUTTON (Desktop Filters)
+   ======================================== */
+.sale-flash {
+  animation: saleFlash 1.5s ease-in-out infinite;
+}
+
+.sale-flash>div:first-child {
+  animation: salePulse 1.5s ease-in-out infinite;
+}
+
+/* ========================================
+   MOBILE BOTTOM NAVIGATION
+   ======================================== */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, #1e3a5f 0%, #264b7a 100%);
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 4px;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  z-index: 100;
+  box-shadow: 0 -4px 20px rgba(30, 58, 95, 0.5);
+  border-top: 1px solid rgba(197, 160, 89, 0.3);
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 8px;
+  color: #9ca3af;
+  font-size: 10px;
+  font-weight: 500;
+  min-width: 56px;
+  gap: 4px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.mobile-nav-item i {
+  font-size: 18px;
+  transition: transform 0.2s ease;
+}
+
+.mobile-nav-item.active,
+.mobile-nav-item:hover {
+  color: #c5a059;
+}
+
+.mobile-nav-item.active i {
+  transform: scale(1.1);
+}
+
+.whatsapp-item {
+  color: #22c55e;
+}
+
+.whatsapp-item i {
+  font-size: 20px;
+}
+
+.whatsapp-item:hover {
+  color: #16a34a;
+}
+
+/* Add padding to body on mobile to account for bottom nav */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 70px;
+  }
+}
+
+/* ========================================
+   CATEGORY ACTIVE (Royal Blue Theme)
+   ======================================== */
+.category-active {
+  background: linear-gradient(135deg, #1e3a5f 0%, #264b7a 100%) !important;
+  color: #c5a059 !important;
+  border-color: #c5a059 !important;
+  box-shadow: 0 4px 20px -5px rgba(197, 160, 89, 0.4);
+}
+
+/* ========================================
+   PRODUCT IMAGE STYLES
+   ======================================== */
+.prod-image-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.prod-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.7s;
+}
+
+.prod-image-wrap:hover .prod-image {
+  transform: scale(1.1);
+}
