@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
+import { uploadToCloudinary } from '@/lib/cloudinary';
 
 export const runtime = 'nodejs';
 
@@ -30,24 +31,21 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Store image data as base64 for database storage ONLY
-    // No filesystem write - images are stored entirely in the database
-    const base64Data = buffer.toString('base64');
-    const imageType = file.type || 'image/jpeg';
-    
-    // Generate a unique identifier for reference (not a file path)
+    // Generate a unique identifier for the image
     const timestamp = Date.now();
     const randomStr = Math.random().toString(36).substring(2, 15);
-    const extension = file.name.split('.').pop() || 'jpg';
-    const filename = `${timestamp}-${randomStr}.${extension}`;
-    
-    // Return the image data and metadata
-    // The image will be stored in database and served via /api/images/[id]
-    return NextResponse.json({ 
-      url: `db://${filename}`, // Special format to indicate database storage
-      filename,
-      data: base64Data,
-      type: imageType
+    const publicId = `${timestamp}-${randomStr}`;
+
+    // Upload to Cloudinary
+    const result = await uploadToCloudinary(buffer, {
+      public_id: publicId,
+      folder: 'gangaram-enterprises/products',
+    });
+
+    // Return the Cloudinary URL
+    return NextResponse.json({
+      url: result.secure_url,
+      public_id: result.public_id,
     });
   } catch (error) {
     console.error('Upload error:', error);
