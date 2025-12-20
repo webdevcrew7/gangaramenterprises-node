@@ -1,8 +1,8 @@
 export const CONTACT_INFO = {
-  name: 'Aravind Reddy',
+  name: 'Gangaram Enterprises',
   phone: '+91 96400 44469',
   phoneRaw: '919640044469',
-  email: 'aravind@luxeliving.com',
+  email: 'contact@gangaramenterprises.com',
   location: 'Hyderabad, Telangana',
   whatsapp: 'https://wa.me/919640044469',
 } as const;

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, Playfair_Display } from 'next/font/google';
+import { Inter, Playfair_Display, Cinzel, Lora } from 'next/font/google';
 import './globals.css';
 import { CartProvider } from '@/components/CartProvider';
 import { MobileMenuProvider } from '@/components/MobileMenuProvider';
@@ -18,10 +18,24 @@ const playfair = Playfair_Display({
   weight: ['400', '600', '700'],
 });
 
+const cinzel = Cinzel({
+  subsets: ['latin'],
+  variable: '--font-cinzel',
+  display: 'swap',
+  weight: ['400', '700'],
+});
+
+const lora = Lora({
+  subsets: ['latin'],
+  variable: '--font-lora',
+  display: 'swap',
+  weight: ['400', '500', '600'],
+});
+
 export const metadata: Metadata = {
-  title: 'Luxe Living | Home Interiors & Furniture',
+  title: 'Gangaram Enterprises | Home Interiors & Furniture',
   description:
-    'Premium Modular Kitchens, Home Theatres, and Custom Furniture by Aravind Reddy. Based in Hyderabad, Telangana.',
+    'Premium Modular Kitchens, Home Theatres, and Custom Furniture. Based in Hyderabad, Telangana.',
   keywords: [
     'home interiors',
     'modular kitchens',
@@ -29,11 +43,12 @@ export const metadata: Metadata = {
     'furniture',
     'Hyderabad',
     'interior design',
+    'gangaram enterprises',
   ],
-  authors: [{ name: 'Aravind Reddy' }],
+  authors: [{ name: 'Gangaram Enterprises' }],
   openGraph: {
-    title: 'Luxe Living | Home Interiors & Furniture',
-    description: 'Where Elegance Meets Comfort',
+    title: 'Gangaram Enterprises | Home Interiors & Furniture',
+    description: 'We Design for your Comfort',
     type: 'website',
   },
   icons: {
@@ -47,7 +62,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+    <html lang="en" className={`${inter.variable} ${playfair.variable} ${cinzel.variable} ${lora.variable}`}>
       <head>
         <link
           rel="stylesheet"

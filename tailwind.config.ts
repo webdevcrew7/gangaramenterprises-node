@@ -11,11 +11,21 @@ const config: Config = {
       fontFamily: {
         sans: ['var(--font-inter)', 'sans-serif'],
         serif: ['var(--font-playfair)', 'serif'],
+        cinzel: ['var(--font-cinzel)', 'serif'],
+        lora: ['var(--font-lora)', 'serif'],
       },
       colors: {
         royal: {
-          800: '#000000',
-          900: '#111111',
+          50: '#e8f0f8',
+          100: '#d1e1f1',
+          200: '#a8c8e8',
+          300: '#7aaddb',
+          400: '#4a8ecd',
+          500: '#2d5a94',
+          600: '#264b7a',
+          700: '#1e3a5f',
+          800: '#162c47',
+          900: '#0f1f30',
         },
         gold: {
           400: '#fbbf24',
@@ -30,6 +40,35 @@ const config: Config = {
         'slide-down': 'slideDown 0.5s ease-out',
         'scale-in': 'scaleIn 0.3s ease-out',
         'float': 'float 3s ease-in-out infinite',
+        'scroll-announcement': 'scrollAnnouncement 25s linear infinite',
+        'sale-flash': 'saleFlash 1.5s ease-in-out infinite',
+        'sale-pulse': 'salePulse 1.5s ease-in-out infinite',
+        'float-bounce': 'floatBounce 3s ease-in-out infinite',
+        'fall-sway': 'fallAndSway 4s ease-in-out infinite',
+      },
+      keyframes: {
+        scrollAnnouncement: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+        saleFlash: {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.05)' },
+        },
+        salePulse: {
+          '0%, 100%': { boxShadow: '0 0 5px rgba(239, 68, 68, 0.5)' },
+          '50%': { boxShadow: '0 0 20px rgba(239, 68, 68, 0.8), 0 0 30px rgba(239, 68, 68, 0.4)' },
+        },
+        floatBounce: {
+          '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+          '50%': { transform: 'translateY(-15px) rotate(10deg)' },
+        },
+        fallAndSway: {
+          '0%': { top: '-20px', transform: 'rotate(45deg) translateX(0)', opacity: '0' },
+          '10%': { opacity: '0.7' },
+          '50%': { transform: 'rotate(45deg) translateX(30px)' },
+          '100%': { top: '100%', transform: 'rotate(405deg) translateX(-30px)', opacity: '0' },
+        },
       },
       transitionDuration: {
         '2000': '2000ms',

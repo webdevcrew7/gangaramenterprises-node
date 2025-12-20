@@ -5,6 +5,7 @@ export interface Product {
   description: string;
   image: string;
   badge?: string;
+  onSale?: boolean;
 }
 
 export interface DatabaseProduct extends Product {
@@ -14,7 +15,7 @@ export interface DatabaseProduct extends Product {
   updated_at?: string;
 }
 
-export type Category = 'all' | Product['category'];
+export type Category = 'all' | 'sale' | Product['category'];
 
-export interface CartItem extends Product {}
+export interface CartItem extends Product { }
 

@@ -33,7 +33,8 @@ export default function MobileMenu() {
 
       {/* Drawer */}
       <div className="fixed top-0 right-0 h-full w-full sm:w-[400px] bg-white z-[70] shadow-2xl transform flex flex-col">
-        <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-black text-white">
+        {/* Header */}
+        <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-royal-700 text-white">
           <h3 className="font-serif text-xl font-bold text-gold-500">Menu</h3>
           <button
             onClick={close}
@@ -43,43 +44,61 @@ export default function MobileMenu() {
             <i className="fa-solid fa-xmark text-xl"></i>
           </button>
         </div>
-        <div className="flex-grow overflow-y-auto p-5 space-y-4">
+
+        {/* Menu Links */}
+        <div className="flex-grow overflow-y-auto p-5 space-y-2">
+          <Link
+            href="/"
+            onClick={() => handleLinkClick('/')}
+            className="mobile-menu-link flex items-center gap-3 px-4 py-3 text-slate-800 font-semibold bg-gold-100 rounded-lg border-b border-gray-100"
+          >
+            <i className="fa-solid fa-home text-gold-500 w-5"></i>
+            <span>Home</span>
+          </Link>
           <a
             href="#collections"
             onClick={(e) => {
               e.preventDefault();
               handleLinkClick('#collections');
             }}
-            className="mobile-menu-link flex items-center gap-3 px-4 py-3 text-slate-800 font-semibold hover:bg-gold-500 hover:text-black transition-all rounded-sm border-b border-gray-100"
+            className="mobile-menu-link flex items-center gap-3 px-4 py-3 text-slate-800 font-semibold hover:bg-gold-500 hover:text-black transition-all rounded-lg border-b border-gray-100"
           >
             <i className="fa-solid fa-briefcase text-gold-500 w-5"></i>
             <span>Services</span>
           </a>
+          <Link
+            href="/about"
+            onClick={() => handleLinkClick('/about')}
+            className="mobile-menu-link flex items-center gap-3 px-4 py-3 text-slate-800 font-semibold hover:bg-gold-500 hover:text-black transition-all rounded-lg border-b border-gray-100"
+          >
+            <i className="fa-solid fa-info-circle text-gold-500 w-5"></i>
+            <span>About Us</span>
+          </Link>
           <a
             href="#contact"
             onClick={(e) => {
               e.preventDefault();
               handleLinkClick('#contact');
             }}
-            className="mobile-menu-link flex items-center gap-3 px-4 py-3 text-slate-800 font-semibold hover:bg-gold-500 hover:text-black transition-all rounded-sm border-b border-gray-100"
+            className="mobile-menu-link flex items-center gap-3 px-4 py-3 text-slate-800 font-semibold hover:bg-gold-500 hover:text-black transition-all rounded-lg border-b border-gray-100"
           >
             <i className="fa-solid fa-location-dot text-gold-500 w-5"></i>
-            <span>Contact (Address)</span>
+            <span>Contact</span>
           </a>
           <Link
             href={CONTACT_INFO.whatsapp}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => handleLinkClick('external')}
-            className="mobile-menu-link flex items-center gap-3 px-4 py-3 text-slate-800 font-semibold hover:bg-green-500 hover:text-white transition-all rounded-sm border-b border-gray-100"
+            className="mobile-menu-link flex items-center gap-3 px-4 py-3 text-slate-800 font-semibold hover:bg-green-500 hover:text-white transition-all rounded-lg border-b border-gray-100"
           >
             <i className="fa-brands fa-whatsapp text-green-500 w-5"></i>
-            <span>Enquiry now</span>
+            <span>WhatsApp</span>
           </Link>
           <a
             href={`tel:${CONTACT_INFO.phoneRaw}`}
             onClick={() => handleLinkClick('external')}
-            className="mobile-menu-link flex items-center gap-3 px-4 py-3 text-slate-800 font-semibold hover:bg-gold-500 hover:text-black transition-all rounded-sm"
+            className="mobile-menu-link flex items-center gap-3 px-4 py-3 text-slate-800 font-semibold hover:bg-gold-500 hover:text-black transition-all rounded-lg"
           >
             <i className="fa-solid fa-phone text-gold-500 w-5"></i>
             <span>Call Us</span>
@@ -89,4 +108,3 @@ export default function MobileMenu() {
     </>
   );
 }
-
