@@ -48,9 +48,8 @@ export default function WhatsAppToggle() {
       {/* Toggle Button - Floating at bottom right */}
       <button
         onClick={toggle}
-        className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 md:bottom-8 md:right-8 z-[9999] bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-full shadow-premium-lg border-2 border-white/20 hover:border-white/40 hover:scale-110 active:scale-95 transition-all duration-500 flex items-center justify-center group relative px-4 py-4 sm:px-5 sm:py-4 gap-2.5 min-w-[64px] sm:min-w-[160px] animate-float ${
-          isOpen ? 'scale-95' : ''
-        }`}
+        className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 md:bottom-8 md:right-8 z-[9999] bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-full shadow-premium-lg border-2 border-white/20 hover:border-white/40 hover:scale-110 active:scale-95 transition-all duration-500 flex items-center justify-center group relative px-4 py-4 sm:px-5 sm:py-4 gap-2.5 min-w-[64px] sm:min-w-[160px] animate-float ${isOpen ? 'scale-95' : ''
+          }`}
         aria-label="Toggle WhatsApp widget"
         aria-expanded={isOpen}
       >
@@ -89,7 +88,7 @@ export default function WhatsAppToggle() {
                 </div>
                 <div>
                   <h3 id="whatsapp-widget-title" className="font-bold text-base">
-                    Luxe Living
+                    Gangaram Enterprises
                   </h3>
                   <p className="text-xs text-green-100">Typically replies instantly</p>
                 </div>

@@ -3,7 +3,12 @@ import { Inter, Playfair_Display, Cinzel, Lora } from 'next/font/google';
 import './globals.css';
 import { CartProvider } from '@/components/CartProvider';
 import { MobileMenuProvider } from '@/components/MobileMenuProvider';
-import { WhatsAppProvider } from '@/components/WhatsAppProvider';
+import { ToastProvider } from '@/components/ToastProvider';
+import FloatingCallButton from '@/components/FloatingCallButton';
+import MobileBottomNav from '@/components/MobileBottomNav';
+import MobileMenu from '@/components/MobileMenu';
+import CartDrawer from '@/components/CartDrawer';
+import Toast from '@/components/Toast';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -72,7 +77,15 @@ export default function RootLayout({
       <body className="bg-gray-50 text-slate-800 antialiased font-sans flex flex-col min-h-screen overflow-x-hidden">
         <CartProvider>
           <MobileMenuProvider>
-            <WhatsAppProvider>{children}</WhatsAppProvider>
+            <ToastProvider>
+              {children}
+              {/* Common components for all pages */}
+              <MobileMenu />
+              <CartDrawer />
+              <Toast />
+              <FloatingCallButton />
+              <MobileBottomNav />
+            </ToastProvider>
           </MobileMenuProvider>
         </CartProvider>
       </body>

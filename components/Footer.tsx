@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { CONTACT_INFO } from '@/constants/contact';
 
@@ -78,7 +80,7 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
-          <p>&copy; 2024 Gangaram Enterprises. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Gangaram Enterprises. All rights reserved.</p>
           <div className="flex gap-4">
             <Link
               href={CONTACT_INFO.whatsapp}

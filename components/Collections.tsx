@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Category, Product } from '@/types';
 import { useProductFilter } from '@/hooks/useProductFilter';
 import { useCartContext } from './CartProvider';
-import { useToast } from '@/hooks/useToast';
+import { useToastContext } from './ToastProvider';
 import ProductCard from './ProductCard';
 
 export default function Collections() {
@@ -13,7 +13,7 @@ export default function Collections() {
   const { selectedCategory, setSelectedCategory, filteredProducts } =
     useProductFilter(products);
   const { addToCart } = useCartContext();
-  const { showToast } = useToast();
+  const { showToast } = useToastContext();
 
   useEffect(() => {
     fetchProducts();
@@ -95,10 +95,10 @@ export default function Collections() {
             >
               <div
                 className={`w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 flex items-center justify-center transition-all duration-300 ${cat.isSale
-                    ? 'border-red-400 bg-gradient-to-br from-red-500 to-orange-500'
-                    : selectedCategory === cat.value
-                      ? 'border-gold-500 bg-royal-700'
-                      : 'border-gray-200 bg-gray-100 hover:border-gold-400'
+                  ? 'border-red-400 bg-gradient-to-br from-red-500 to-orange-500'
+                  : selectedCategory === cat.value
+                    ? 'border-gold-500 bg-royal-700'
+                    : 'border-gray-200 bg-gray-100 hover:border-gold-400'
                   }`}
               >
                 {cat.emoji ? (
@@ -114,10 +114,10 @@ export default function Collections() {
               </div>
               <span
                 className={`text-xs md:text-sm font-medium transition-colors duration-300 ${cat.isSale
-                    ? 'text-red-600 font-bold'
-                    : selectedCategory === cat.value
-                      ? 'text-gold-600 font-bold'
-                      : 'text-slate-700'
+                  ? 'text-red-600 font-bold'
+                  : selectedCategory === cat.value
+                    ? 'text-gold-600 font-bold'
+                    : 'text-slate-700'
                   }`}
               >
                 {cat.label}
@@ -133,8 +133,8 @@ export default function Collections() {
               key={cat.value}
               onClick={() => handleCategoryClick(cat.value)}
               className={`px-4 py-2 rounded-full border text-xs font-semibold transition-all duration-300 ${selectedCategory === cat.value
-                  ? 'bg-royal-700 text-gold-400 border-gold-500'
-                  : 'bg-white text-slate-700 border-gray-300 hover:border-gold-400'
+                ? 'bg-royal-700 text-gold-400 border-gold-500'
+                : 'bg-white text-slate-700 border-gray-300 hover:border-gold-400'
                 } ${cat.isSale ? 'animate-pulse border-red-400 text-red-500' : ''}`}
             >
               {cat.emoji && <span className="mr-1">{cat.emoji}</span>}

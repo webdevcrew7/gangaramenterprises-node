@@ -46,30 +46,7 @@ const config: Config = {
         'float-bounce': 'floatBounce 3s ease-in-out infinite',
         'fall-sway': 'fallAndSway 4s ease-in-out infinite',
       },
-      keyframes: {
-        scrollAnnouncement: {
-          '0%': { transform: 'translateX(0)' },
-          '100%': { transform: 'translateX(-50%)' },
-        },
-        saleFlash: {
-          '0%, 100%': { transform: 'scale(1)' },
-          '50%': { transform: 'scale(1.05)' },
-        },
-        salePulse: {
-          '0%, 100%': { boxShadow: '0 0 5px rgba(239, 68, 68, 0.5)' },
-          '50%': { boxShadow: '0 0 20px rgba(239, 68, 68, 0.8), 0 0 30px rgba(239, 68, 68, 0.4)' },
-        },
-        floatBounce: {
-          '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
-          '50%': { transform: 'translateY(-15px) rotate(10deg)' },
-        },
-        fallAndSway: {
-          '0%': { top: '-20px', transform: 'rotate(45deg) translateX(0)', opacity: '0' },
-          '10%': { opacity: '0.7' },
-          '50%': { transform: 'rotate(45deg) translateX(30px)' },
-          '100%': { top: '100%', transform: 'rotate(405deg) translateX(-30px)', opacity: '0' },
-        },
-      },
+      // Keyframes are defined in globals.css for better maintainability
       transitionDuration: {
         '2000': '2000ms',
         '3000': '3000ms',

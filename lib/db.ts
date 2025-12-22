@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise';
+import mysql, { RowDataPacket } from 'mysql2/promise';
 import bcrypt from 'bcryptjs';
 import { products as defaultProducts } from '@/constants/products';
 
@@ -55,7 +55,7 @@ export async function initDatabase() {
     /* ----------------------------
      * Create default admin user
      * ---------------------------- */
-    const [adminRows] = await connection.query<any[]>(
+    const [adminRows] = await connection.query<RowDataPacket[]>(
       'SELECT COUNT(*) AS count FROM admin_users WHERE username = ?',
       ['admin']
     );
@@ -74,7 +74,7 @@ export async function initDatabase() {
     /* ----------------------------
      * Seed products (if empty)
      * ---------------------------- */
-    const [productRows] = await connection.query<any[]>(
+    const [productRows] = await connection.query<RowDataPacket[]>(
       'SELECT COUNT(*) AS count FROM products'
     );
 

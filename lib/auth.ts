@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import bcrypt from 'bcryptjs';
 import pool from './db';
-
+import { RowDataPacket } from 'mysql2/promise';
 const SESSION_COOKIE = 'admin_session';
 
 export interface AdminSession {
@@ -71,7 +71,7 @@ export async function verifyCredentials(
   username: string,
   password: string
 ): Promise<AdminSession | null> {
-  const [rows]: any = await pool.query(
+  const [rows] = await pool.query<RowDataPacket[]>(
     'SELECT id, username, password_hash FROM admin_users WHERE username = ?',
     [username]
   );

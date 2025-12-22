@@ -115,7 +115,7 @@ export default function FlashSaleCarousel() {
                     onTouchStart={handleTouchStart}
                     onTouchEnd={handleTouchEnd}
                 >
-                    {slides.map((slide, index) => (
+                    {slides.map((slide) => (
                         <div key={slide.id} className="carousel-slide min-w-full">
                             <div
                                 className="sale-banner relative overflow-hidden cursor-pointer"
