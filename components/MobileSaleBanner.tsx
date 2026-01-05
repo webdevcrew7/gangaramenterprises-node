@@ -1,138 +1,136 @@
-'use client';
+'use client'
 
-import { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
-
-interface BannerSlide {
-    id: number;
-    image: string;
-    alt: string;
-}
-
-// Banner images from public/banners folder
-// Duplicate the same banner to show carousel functionality
-// Replace with different banners as you add them to public/banners
-const bannerSlides: BannerSlide[] = [
-    {
-        id: 1,
-        image: '/banners/sale-banner.jpg',
-        alt: 'Festive Sale - Premium Furniture',
-    },
-    {
-        id: 2,
-        image: '/banners/sale-banner.jpg', // Same banner duplicated
-        alt: 'Special Offers on Home Interiors',
-    },
-    {
-        id: 3,
-        image: '/banners/sale-banner.jpg', // Same banner duplicated
-        alt: 'Home Theatre & Modular Kitchen Deals',
-    },
-];
+import { useState, useEffect, useRef, useCallback } from 'react'
+import Image from 'next/image'
 
 export default function MobileSaleBanner() {
-    const [currentSlide, setCurrentSlide] = useState(0);
-    const [touchStart, setTouchStart] = useState<number | null>(null);
-    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [currentSlide, setCurrentSlide] = useState(0)
+  const [dragOffset, setDragOffset] = useState(0)
+  const [isTransitioning, setIsTransitioning] = useState(true)
+  const isDragging = useRef(false)
+  const startX = useRef(0)
+  const containerRef = useRef<HTMLDivElement>(null)
 
-    const minSwipeDistance = 50;
+  const slides = [
+    '/assets/banners/square.png',
+    '/assets/banners/square.png',
+    '/assets/banners/square.png',
+  ]
 
-    const goToSlide = useCallback((index: number) => {
-        let newIndex = index;
-        if (index < 0) newIndex = bannerSlides.length - 1;
-        if (index >= bannerSlides.length) newIndex = 0;
-        setCurrentSlide(newIndex);
-    }, []);
+  useEffect(() => {
+    if (isDragging.current) return
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length)
+    }, 3500)
+    return () => clearInterval(interval)
+  }, [slides.length, currentSlide])
 
-    const nextSlide = useCallback(() => {
-        goToSlide(currentSlide + 1);
-    }, [currentSlide, goToSlide]);
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    isDragging.current = true
+    startX.current = e.touches[0].clientX
+    setIsTransitioning(false)
+  }, [])
 
-    const prevSlide = useCallback(() => {
-        goToSlide(currentSlide - 1);
-    }, [currentSlide, goToSlide]);
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!isDragging.current) return
+    const currentX = e.touches[0].clientX
+    const diff = currentX - startX.current
+    setDragOffset(diff)
+  }, [])
 
-    // Auto-rotate every 4 seconds
-    useEffect(() => {
-        const interval = setInterval(nextSlide, 4000);
-        return () => clearInterval(interval);
-    }, [nextSlide]);
+  const handleTouchEnd = useCallback(() => {
+    if (!isDragging.current) return
+    isDragging.current = false
+    setIsTransitioning(true)
 
-    // Touch handlers for swipe
-    const handleTouchStart = (e: React.TouchEvent) => {
-        setTouchEnd(null);
-        setTouchStart(e.targetTouches[0].clientX);
-    };
+    const containerWidth = containerRef.current?.offsetWidth || 400
+    const threshold = containerWidth * 0.2 // 20% of width
 
-    const handleTouchMove = (e: React.TouchEvent) => {
-        setTouchEnd(e.targetTouches[0].clientX);
-    };
+    if (dragOffset > threshold && currentSlide > 0) {
+      setCurrentSlide(currentSlide - 1)
+    } else if (dragOffset < -threshold && currentSlide < slides.length - 1) {
+      setCurrentSlide(currentSlide + 1)
+    }
 
-    const handleTouchEnd = () => {
-        if (!touchStart || !touchEnd) return;
-        const distance = touchStart - touchEnd;
-        const isLeftSwipe = distance > minSwipeDistance;
-        const isRightSwipe = distance < -minSwipeDistance;
+    setDragOffset(0)
+  }, [dragOffset, currentSlide, slides.length])
 
-        if (isLeftSwipe) {
-            nextSlide();
-        } else if (isRightSwipe) {
-            prevSlide();
-        }
-    };
+  const scrollToSaleCategory = () => {
+    if (Math.abs(dragOffset) > 5) return // Prevent click during drag
 
-    return (
-        <div className="md:hidden relative w-full mt-1 px-3">
-            {/* Carousel Container with border radius and shadow */}
-            <div className="relative overflow-hidden rounded-xl shadow-xl">
-                {/* Gold accent overlay at bottom */}
-                <div
-                    className="absolute bottom-0 left-0 right-0 h-8 z-10 pointer-events-none"
-                    style={{
-                        background: 'linear-gradient(to top, rgba(197, 160, 89, 0.7), transparent)',
-                    }}
+    const collectionsSection = document.getElementById('collections')
+    const saleBtn = document.querySelector('#category-filters [data-category="sale"]') as HTMLElement
+
+    if (collectionsSection && saleBtn) {
+      saleBtn.click()
+      requestAnimationFrame(() => {
+        const headerOffset = 80
+        const elementPosition = collectionsSection.getBoundingClientRect().top
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+        window.scrollTo({ top: offsetPosition, behavior: 'smooth' })
+      })
+    } else if (collectionsSection) {
+      collectionsSection.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  const gap = 16 // Gap between slides in pixels
+
+  const getTransform = () => {
+    const containerWidth = containerRef.current?.offsetWidth || 400
+    const slideOffset = currentSlide * (containerWidth + gap)
+    return `translateX(${-slideOffset + dragOffset}px)`
+  }
+
+  return (
+    <div id="mobile-sale-banner" className="md:hidden relative z-10 w-full mt-6 pb-6">
+      <div className="p-2">
+        <div
+          ref={containerRef}
+          className="relative rounded-xl overflow-hidden shadow-2xl touch-pan-y"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div
+            id="mobile-carousel-track"
+            className="flex gap-4"
+            style={{
+              transform: getTransform(),
+              transition: isTransitioning ? 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)' : 'none'
+            }}
+          >
+            {slides.map((slide, index) => (
+              <div
+                key={index}
+                className="min-w-full cursor-pointer select-none"
+                onClick={scrollToSaleCategory}
+              >
+                <Image
+                  src={slide}
+                  alt={`Sale Banner ${index + 1}`}
+                  width={400}
+                  height={400}
+                  className="w-full h-auto object-cover pointer-events-none"
+                  draggable={false}
+                  unoptimized
                 />
-
-                {/* Carousel Track */}
-                <div
-                    className="flex transition-transform duration-500 ease-out"
-                    style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-                    onTouchStart={handleTouchStart}
-                    onTouchMove={handleTouchMove}
-                    onTouchEnd={handleTouchEnd}
-                >
-                    {bannerSlides.map((slide) => (
-                        <div key={slide.id} className="min-w-full">
-                            {/* Aspect ratio 16:9 for compact height */}
-                            <div className="relative w-full aspect-video">
-                                <Image
-                                    src={slide.image}
-                                    alt={slide.alt}
-                                    fill
-                                    className="object-cover"
-                                    sizes="100vw"
-                                    priority={slide.id === 1}
-                                />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Dot Indicators */}
-            <div className="flex justify-center gap-2 mt-2">
-                {bannerSlides.map((_, index) => (
-                    <button
-                        key={index}
-                        onClick={() => goToSlide(index)}
-                        className={`transition-all duration-300 rounded-full ${index === currentSlide
-                            ? 'w-6 h-2 bg-gold-500'
-                            : 'w-2 h-2 bg-white/60'
-                            }`}
-                        aria-label={`Go to slide ${index + 1}`}
-                    />
-                ))}
-            </div>
+              </div>
+            ))}
+          </div>
         </div>
-    );
+      </div>
+      <div id="mobile-carousel-dots" className="flex justify-center gap-2 py-1">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentSlide ? 'bg-white scale-125' : 'bg-white/40'
+              }`}
+            onClick={() => setCurrentSlide(index)}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  )
 }

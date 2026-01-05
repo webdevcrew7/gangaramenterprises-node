@@ -1,0 +1,10 @@
+# Robots.txt for Gangaram Enterprises
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://gangaramenterprises.com/sitemap.xml
+
+# Disallow admin pages from indexing
+Disallow: /admin/
+Disallow: /api/

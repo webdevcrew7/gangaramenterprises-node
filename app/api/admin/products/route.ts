@@ -4,7 +4,7 @@ import pool from '@/lib/db';
 
 export const runtime = 'nodejs';
 
-// GET - Fetch all products (admin view)
+// GET - Fetch all products (admin view) with their first variant image
 export async function GET(request: NextRequest) {
   const session = await getSession();
   if (!session) {
@@ -17,27 +17,28 @@ export async function GET(request: NextRequest) {
 
     let query = `
       SELECT
-        id,
-        name,
-        category,
-        description,
-        image,
-        badge,
-        is_hidden,
-        display_order,
-        created_at,
-        updated_at
-      FROM products
+        p.id,
+        p.name,
+        p.category,
+        p.description,
+        p.badge,
+        p.on_sale,
+        p.is_hidden,
+        p.display_order,
+        p.created_at,
+        p.updated_at,
+        (SELECT pv.image FROM product_variants pv WHERE pv.product_id = p.id ORDER BY pv.display_order LIMIT 1) as image
+      FROM products p
     `;
 
     const params: any[] = [];
 
     if (!includeHidden) {
-      query += ' WHERE is_hidden = ?';
+      query += ' WHERE p.is_hidden = ?';
       params.push(0);
     }
 
-    query += ' ORDER BY display_order ASC, id ASC';
+    query += ' ORDER BY p.display_order ASC, p.id ASC';
 
     const [rows] = await pool.query(query, params);
 
@@ -64,19 +65,21 @@ export async function POST(request: NextRequest) {
       category,
       description,
       image,
+      variant_name,
       badge,
+      on_sale,
       is_hidden,
       display_order,
     } = await request.json();
 
-    if (!name || !category || !description || !image) {
+    if (!name || !category || !description) {
       return NextResponse.json(
-        { error: 'Name, category, description, and image are required' },
+        { error: 'Name, category, and description are required' },
         { status: 400 }
       );
     }
 
-    const validCategories = ['interiors', 'theatre', 'furniture', 'decor'];
+    const validCategories = ['interiors', 'theatre', 'furniture', 'curtains'];
     if (!validCategories.includes(category)) {
       return NextResponse.json(
         { error: 'Invalid category' },
@@ -87,23 +90,32 @@ export async function POST(request: NextRequest) {
     const [result]: any = await pool.query(
       `
       INSERT INTO products
-      (name, category, description, image, badge, is_hidden, display_order, updated_at)
+      (name, category, description, badge, on_sale, is_hidden, display_order, updated_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
       `,
       [
         name,
         category,
         description,
-        image,
         badge || '',
+        on_sale ? 1 : 0,
         is_hidden ? 1 : 0,
         display_order ?? 0,
       ]
     );
 
+    const productId = result.insertId;
+
+    // Auto-create a default variant using the form data
+    await pool.query(
+      `INSERT INTO product_variants (product_id, name, image, color, display_order)
+       VALUES (?, ?, ?, ?, ?)`,
+      [productId, variant_name || name, image || '/assets/placeholder.svg', '#808080', 0]
+    );
+
     const [rows]: any = await pool.query(
       'SELECT * FROM products WHERE id = ?',
-      [result.insertId]
+      [productId]
     );
 
     return NextResponse.json({ product: rows[0] }, { status: 201 });

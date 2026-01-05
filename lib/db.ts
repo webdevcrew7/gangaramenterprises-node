@@ -1,6 +1,5 @@
 import mysql from 'mysql2/promise';
 import bcrypt from 'bcryptjs';
-import { products as defaultProducts } from '@/constants/products';
 
 /**
  * MySQL connection pool
@@ -16,7 +15,7 @@ const pool = mysql.createPool({
 });
 
 /**
- * Initialize database schema
+ * Initialize database schema with variants support
  */
 export async function initDatabase() {
   const connection = await pool.getConnection();
@@ -35,22 +34,61 @@ export async function initDatabase() {
     `);
 
     /* ----------------------------
-     * products table
+     * products table (with curtains category and on_sale)
      * ---------------------------- */
     await connection.query(`
       CREATE TABLE IF NOT EXISTS products (
         id INT PRIMARY KEY AUTO_INCREMENT,
         name VARCHAR(255) NOT NULL,
-        category ENUM('interiors','theatre','furniture','decor') NOT NULL,
+        category ENUM('interiors','theatre','furniture','curtains') NOT NULL,
         description TEXT NOT NULL,
-        image VARCHAR(255) NOT NULL,
         badge VARCHAR(100) DEFAULT '',
+        on_sale TINYINT(1) DEFAULT 0,
         is_hidden TINYINT(1) DEFAULT 0,
         display_order INT DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       )
     `);
+
+    /* ----------------------------
+     * product_variants table
+     * ---------------------------- */
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS product_variants (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        product_id INT NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        image VARCHAR(500) NOT NULL,
+        color VARCHAR(20) DEFAULT '#666666',
+        display_order INT DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+      )
+    `);
+
+    /* ----------------------------
+     * Migrate: Add curtains to category ENUM if not exists
+     * ---------------------------- */
+    try {
+      await connection.query(`
+        ALTER TABLE products 
+        MODIFY COLUMN category ENUM('interiors','theatre','furniture','decor','curtains') NOT NULL
+      `);
+    } catch (e) {
+      // Column may already have the correct enum, ignore error
+    }
+
+    /* ----------------------------
+     * Migrate: Add on_sale column if not exists
+     * ---------------------------- */
+    try {
+      await connection.query(`
+        ALTER TABLE products ADD COLUMN on_sale TINYINT(1) DEFAULT 0 AFTER badge
+      `);
+    } catch (e) {
+      // Column may already exist
+    }
 
     /* ----------------------------
      * Create default admin user
@@ -71,38 +109,6 @@ export async function initDatabase() {
       console.log('Default admin user created (admin / admin123)');
     }
 
-    /* ----------------------------
-     * Seed products (if empty)
-     * ---------------------------- */
-    const [productRows] = await connection.query<any[]>(
-      'SELECT COUNT(*) AS count FROM products'
-    );
-
-    if (productRows[0].count === 0 && Array.isArray(defaultProducts)) {
-      for (let i = 0; i < defaultProducts.length; i++) {
-        const product = defaultProducts[i];
-        if (!product) continue;
-
-        await connection.query(
-          `
-          INSERT INTO products
-          (id, name, category, description, image, badge, is_hidden, display_order)
-          VALUES (?, ?, ?, ?, ?, ?, 0, ?)
-        `,
-          [
-            product.id,
-            product.name,
-            product.category,
-            product.description,
-            product.image,
-            product.badge || '',
-            i,
-          ]
-        );
-      }
-
-      console.log(`Seeded ${defaultProducts.length} products`);
-    }
   } finally {
     connection.release();
   }

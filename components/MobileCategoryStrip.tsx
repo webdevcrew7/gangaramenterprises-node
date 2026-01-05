@@ -1,60 +1,59 @@
-'use client';
+'use client'
 
-import { useCallback } from 'react';
-
-interface CategoryItem {
-    id: string;
-    label: string;
-    emoji?: string;
-    isSale?: boolean;
-}
-
-const categories: CategoryItem[] = [
-    { id: 'sale', label: 'On Sale', emoji: '🔥', isSale: true },
-    { id: 'interiors', label: 'Interiors' },
-    { id: 'theatre', label: 'Theatre' },
-    { id: 'furniture', label: 'Furniture' },
-    { id: 'decor', label: 'Decor' },
-];
+import Image from 'next/image'
+import { useCategory } from '@/contexts/CategoryContext'
 
 export default function MobileCategoryStrip() {
-    const handleCategoryClick = useCallback((categoryId: string) => {
-        // Scroll to collections section
-        const collectionsSection = document.getElementById('collections');
-        if (collectionsSection) {
-            collectionsSection.scrollIntoView({ behavior: 'smooth' });
-        }
+  const { selectedCategory, setSelectedCategory } = useCategory()
 
-        // Dispatch custom event for Collections to pick up
-        setTimeout(() => {
-            const event = new CustomEvent('categorySelected', { detail: { category: categoryId } });
-            window.dispatchEvent(event);
-        }, 500);
-    }, []);
+  const scrollToCategory = (category: string) => {
+    // Update the shared state directly
+    setSelectedCategory(category)
 
-    return (
-        <section className="mobile-category-strip">
-            {categories.map((category) => (
-                <button
-                    key={category.id}
-                    onClick={() => handleCategoryClick(category.id)}
-                    className={`category-icon-item ${category.isSale ? 'sale-icon' : ''}`}
-                    data-category={category.id}
-                >
-                    <div className="icon-circle">
-                        {category.emoji ? (
-                            <span style={{ fontSize: '24px' }}>{category.emoji}</span>
-                        ) : (
-                            <span className="text-xs font-bold text-gray-600">
-                                {category.label.charAt(0)}
-                            </span>
-                        )}
-                    </div>
-                    <span className={category.isSale ? 'text-red-500 font-bold' : ''}>
-                        {category.label}
-                    </span>
-                </button>
-            ))}
-        </section>
-    );
+    // Scroll to the collections section
+    const collectionsSection = document.getElementById('collections')
+    if (collectionsSection) {
+      requestAnimationFrame(() => {
+        const headerOffset = 80
+        const elementPosition = collectionsSection.getBoundingClientRect().top
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        })
+      })
+    }
+  }
+
+  const categories = [
+    { key: 'sale', label: 'On Sale', icon: '🔥', isSale: true },
+    { key: 'interiors', label: 'Interiors', image: '/assets/Interiors/Design1.webp' },
+    { key: 'theatre', label: 'Theatre', image: '/assets/Home Theatre/HT1.webp' },
+    { key: 'furniture', label: 'Furniture', image: '/assets/Furniture/sofa1.webp' },
+    { key: 'curtains', label: 'Curtains', image: '/assets/Curtains/Curtain1.webp' },
+  ]
+
+  return (
+    <section className="mobile-category-strip">
+      {categories.map((cat) => (
+        <a
+          key={cat.key}
+          href="#collections"
+          className={`category-icon-item ${cat.isSale ? 'sale-icon' : ''} ${selectedCategory === cat.key ? 'active' : ''}`}
+          data-category={cat.key}
+          onClick={(e) => { e.preventDefault(); scrollToCategory(cat.key) }}
+        >
+          <div className={`icon-circle ${selectedCategory === cat.key ? 'selected' : ''}`}>
+            {cat.icon ? (
+              <span style={{ fontSize: '24px' }}>{cat.icon}</span>
+            ) : (
+              <Image src={cat.image!} alt={cat.label} width={52} height={52} className="w-full h-full object-cover" unoptimized />
+            )}
+          </div>
+          <span className={selectedCategory === cat.key ? 'text-gold-600 font-semibold' : ''}>{cat.label}</span>
+        </a>
+      ))}
+    </section>
+  )
 }

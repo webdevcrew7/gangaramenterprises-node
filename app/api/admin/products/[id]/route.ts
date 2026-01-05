@@ -4,7 +4,7 @@ import pool from '@/lib/db';
 
 export const runtime = 'nodejs';
 
-// GET - Get single product
+// GET - Get single product with variants
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -15,7 +15,9 @@ export async function GET(
   }
 
   const [rows]: any = await pool.query(
-    'SELECT * FROM products WHERE id = ?',
+    `SELECT p.*, 
+      (SELECT pv.image FROM product_variants pv WHERE pv.product_id = p.id ORDER BY pv.display_order LIMIT 1) as image
+     FROM products p WHERE p.id = ?`,
     [Number(params.id)]
   );
 
@@ -41,8 +43,8 @@ export async function PUT(
       name,
       category,
       description,
-      image,
       badge,
+      on_sale,
       is_hidden,
       display_order,
     } = await request.json();
@@ -57,7 +59,7 @@ export async function PUT(
     }
 
     if (category) {
-      const validCategories = ['interiors', 'theatre', 'furniture', 'decor'];
+      const validCategories = ['interiors', 'theatre', 'furniture', 'curtains'];
       if (!validCategories.includes(category)) {
         return NextResponse.json(
           { error: 'Invalid category' },
@@ -73,8 +75,8 @@ export async function PUT(
         name = COALESCE(?, name),
         category = COALESCE(?, category),
         description = COALESCE(?, description),
-        image = COALESCE(?, image),
         badge = COALESCE(?, badge),
+        on_sale = COALESCE(?, on_sale),
         is_hidden = COALESCE(?, is_hidden),
         display_order = COALESCE(?, display_order),
         updated_at = CURRENT_TIMESTAMP
@@ -84,8 +86,8 @@ export async function PUT(
         name ?? null,
         category ?? null,
         description ?? null,
-        image ?? null,
         badge ?? null,
+        on_sale !== undefined ? (on_sale ? 1 : 0) : null,
         is_hidden !== undefined ? (is_hidden ? 1 : 0) : null,
         display_order ?? null,
         Number(params.id),
@@ -107,7 +109,7 @@ export async function PUT(
   }
 }
 
-// DELETE - Delete product
+// DELETE - Delete product (variants cascade deleted automatically)
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }

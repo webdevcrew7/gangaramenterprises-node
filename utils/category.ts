@@ -5,7 +5,7 @@ export function getCategoryName(category: Product['category']): string {
     interiors: 'Interiors & Kitchens',
     theatre: 'Home Theatre',
     furniture: 'Furniture',
-    decor: 'Decor & Windows',
+    curtains: 'Curtains & Blinds',
   };
   return map[category] || category;
 }

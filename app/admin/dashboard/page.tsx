@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Product, DatabaseProduct } from '@/types';
+import VariantManager from '@/components/admin/VariantManager';
 
 export default function AdminDashboard() {
   const [products, setProducts] = useState<DatabaseProduct[]>([]);
@@ -10,6 +11,8 @@ export default function AdminDashboard() {
   const [authenticated, setAuthenticated] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [variantProduct, setVariantProduct] = useState<DatabaseProduct | null>(null);
+  const [categoryFilter, setCategoryFilter] = useState<'all' | Product['category']>('all');
   const [formData, setFormData] = useState({
     name: '',
     category: 'interiors' as Product['category'],
@@ -20,6 +23,7 @@ export default function AdminDashboard() {
     badge: '',
     is_hidden: false,
     display_order: 0,
+    variant_name: '',
   });
   const [imageInputType, setImageInputType] = useState<'url' | 'upload'>('url');
   const [uploading, setUploading] = useState(false);
@@ -63,21 +67,22 @@ export default function AdminDashboard() {
   };
 
   const handleEdit = (product: DatabaseProduct) => {
-    setEditingProduct(product);
+    setEditingProduct(product as any);
     const productAny = product as any;
     setFormData({
       name: product.name,
       category: product.category,
       description: product.description,
-      image: product.image,
+      image: product.image || '',
       image_data: productAny.image_data ? Buffer.from(productAny.image_data).toString('base64') : '',
       image_type: productAny.image_type || '',
       badge: product.badge || '',
       is_hidden: product.is_hidden === 1,
       display_order: product.display_order || 0,
+      variant_name: '', // Not used when editing
     });
     // Determine if image is a URL or uploaded file/database
-    setImageInputType(product.image.startsWith('http') ? 'url' : 'upload');
+    setImageInputType(product.image?.startsWith('http') ? 'url' : 'upload');
     setSelectedFile(null);
     setShowModal(true);
   };
@@ -94,6 +99,7 @@ export default function AdminDashboard() {
       badge: '',
       is_hidden: false,
       display_order: products.length,
+      variant_name: '',
     });
     setImageInputType('url');
     setSelectedFile(null);
@@ -138,8 +144,8 @@ export default function AdminDashboard() {
 
       const data = await response.json();
       // Store both URL and image data for database storage
-      setFormData({ 
-        ...formData, 
+      setFormData({
+        ...formData,
         image: data.url,
         image_data: data.data,
         image_type: data.type
@@ -231,53 +237,89 @@ export default function AdminDashboard() {
     );
   }
 
+  // Filter products by category
+  const filteredProducts = categoryFilter === 'all'
+    ? products
+    : products.filter(p => p.category === categoryFilter);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-          <div className="flex items-center gap-4">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+          <div className="flex items-center gap-2 sm:gap-4">
             <a
               href="/"
-              className="text-gray-600 hover:text-gray-900 transition"
+              className="text-gray-600 hover:text-gray-900 transition text-sm sm:text-base"
               target="_blank"
             >
-              <i className="fa-solid fa-external-link-alt mr-2"></i>
-              View Site
+              <i className="fa-solid fa-external-link-alt sm:mr-2"></i>
+              <span className="hidden sm:inline">View Site</span>
             </a>
             <button
               onClick={handleLogout}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+              className="px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm sm:text-base"
             >
-              <i className="fa-solid fa-sign-out-alt mr-2"></i>
-              Logout
+              <i className="fa-solid fa-sign-out-alt sm:mr-2"></i>
+              <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-6 flex justify-between items-center">
-          <h2 className="text-xl font-semibold text-gray-800">Portfolio Items</h2>
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
+        <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
+          <div>
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Portfolio Items</h2>
+            <p className="text-xs sm:text-sm text-gray-500">{filteredProducts.length} of {products.length} items</p>
+          </div>
           <button
             onClick={handleAdd}
-            className="px-6 py-2 bg-gradient-to-r from-black to-gray-900 text-white rounded-lg hover:from-gray-900 hover:to-black transition font-semibold"
+            className="w-full sm:w-auto px-4 sm:px-6 py-3 sm:py-2 bg-gradient-to-r from-black to-gray-900 text-white rounded-lg hover:from-gray-900 hover:to-black transition font-semibold text-sm sm:text-base"
           >
             <i className="fa-solid fa-plus mr-2"></i>
             Add Product
           </button>
         </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((product) => (
+        {/* Category Filters - horizontally scrollable on mobile */}
+        <div className="mb-4 sm:mb-6 flex gap-2 overflow-x-auto pb-2 -mx-3 px-3 sm:mx-0 sm:px-0 sm:flex-wrap scrollbar-hide">
+          {[
+            { key: 'all', label: 'All', icon: 'fa-th-large' },
+            { key: 'interiors', label: 'Interiors', icon: 'fa-couch' },
+            { key: 'theatre', label: 'Home Theatre', icon: 'fa-tv' },
+            { key: 'furniture', label: 'Furniture', icon: 'fa-chair' },
+            { key: 'curtains', label: 'Curtains', icon: 'fa-curtain' },
+          ].map((cat) => (
+            <button
+              key={cat.key}
+              onClick={() => setCategoryFilter(cat.key as any)}
+              className={`flex-shrink-0 px-3 sm:px-4 py-2.5 sm:py-2 rounded-lg font-medium transition flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base ${categoryFilter === cat.key
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                }`}
+            >
+              <i className={`fa-solid ${cat.icon}`}></i>
+              <span className="whitespace-nowrap">{cat.label}</span>
+              {cat.key !== 'all' && (
+                <span className={`text-xs px-1.5 py-0.5 rounded-full ${categoryFilter === cat.key ? 'bg-white/20' : 'bg-gray-100'
+                  }`}>
+                  {products.filter(p => p.category === cat.key).length}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Products Grid - single column on mobile */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {filteredProducts.map((product) => (
             <div
               key={product.id}
-              className={`bg-white rounded-lg shadow-md overflow-hidden border-2 ${
-                product.is_hidden ? 'opacity-60 border-gray-300' : 'border-transparent'
-              }`}
+              className={`bg-white rounded-lg shadow-md overflow-hidden border-2 ${product.is_hidden ? 'opacity-60 border-gray-300' : 'border-transparent'
+                }`}
             >
               <div className="relative h-48 bg-gray-200">
                 <img
@@ -315,7 +357,14 @@ export default function AdminDashboard() {
                   </span>
                   <span className="text-xs text-gray-500">Order: {product.display_order}</span>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 mb-2">
+                  <button
+                    onClick={() => setVariantProduct(product)}
+                    className="flex-1 px-3 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition text-sm"
+                  >
+                    <i className="fa-solid fa-images mr-1"></i>
+                    Variants
+                  </button>
                   <button
                     onClick={() => handleEdit(product)}
                     className="flex-1 px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-sm"
@@ -323,13 +372,14 @@ export default function AdminDashboard() {
                     <i className="fa-solid fa-edit mr-1"></i>
                     Edit
                   </button>
+                </div>
+                <div className="flex gap-2">
                   <button
                     onClick={() => handleToggleVisibility(product)}
-                    className={`flex-1 px-3 py-2 rounded transition text-sm ${
-                      product.is_hidden
-                        ? 'bg-green-600 text-white hover:bg-green-700'
-                        : 'bg-yellow-600 text-white hover:bg-yellow-700'
-                    }`}
+                    className={`flex-1 px-3 py-2 rounded transition text-sm ${product.is_hidden
+                      ? 'bg-green-600 text-white hover:bg-green-700'
+                      : 'bg-yellow-600 text-white hover:bg-yellow-700'
+                      }`}
                   >
                     <i className={`fa-solid ${product.is_hidden ? 'fa-eye' : 'fa-eye-slash'} mr-1`}></i>
                     {product.is_hidden ? 'Show' : 'Hide'}
@@ -356,18 +406,18 @@ export default function AdminDashboard() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end sm:items-center justify-center z-50 sm:p-4">
+          <div className="bg-white rounded-t-2xl sm:rounded-lg w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+            <div className="p-4 sm:p-6">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
                   {editingProduct ? 'Edit Product' : 'Add Product'}
                 </h2>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="text-gray-500 hover:text-gray-700"
+                  className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition"
                 >
-                  <i className="fa-solid fa-times text-xl"></i>
+                  <i className="fa-solid fa-times text-xl text-gray-500"></i>
                 </button>
               </div>
 
@@ -380,7 +430,7 @@ export default function AdminDashboard() {
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                    className="w-full px-4 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent text-base"
                     required
                   />
                 </div>
@@ -392,12 +442,12 @@ export default function AdminDashboard() {
                   <select
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value as Product['category'] })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                    className="w-full px-4 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent text-base bg-white"
                   >
                     <option value="interiors">Interiors</option>
                     <option value="theatre">Home Theatre</option>
                     <option value="furniture">Furniture</option>
-                    <option value="decor">Decor</option>
+                    <option value="curtains">Curtains</option>
                   </select>
                 </div>
 
@@ -408,17 +458,35 @@ export default function AdminDashboard() {
                   <textarea
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                    className="w-full px-4 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent text-base"
                     rows={3}
                     required
                   />
                 </div>
 
+                {/* Variant Name - only for new products */}
+                {!editingProduct && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Variant Name *
+                    </label>
+                    <p className="text-xs text-gray-500 mb-2">e.g. "Classic White", "Wood Finish"</p>
+                    <input
+                      type="text"
+                      value={formData.variant_name}
+                      onChange={(e) => setFormData({ ...formData, variant_name: e.target.value })}
+                      className="w-full px-4 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent text-base"
+                      placeholder="e.g. Classic White"
+                      required
+                    />
+                  </div>
+                )}
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Image *
                   </label>
-                  
+
                   {/* Toggle between URL and Upload */}
                   <div className="flex gap-2 mb-3">
                     <button
@@ -430,11 +498,10 @@ export default function AdminDashboard() {
                           setFormData({ ...formData, image: '' });
                         }
                       }}
-                      className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition ${
-                        imageInputType === 'url'
-                          ? 'bg-gradient-to-r from-black to-gray-900 text-white'
-                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      }`}
+                      className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition ${imageInputType === 'url'
+                        ? 'bg-gradient-to-r from-black to-gray-900 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
                     >
                       <i className="fa-solid fa-link mr-2"></i>
                       URL
@@ -447,11 +514,10 @@ export default function AdminDashboard() {
                           setFormData({ ...formData, image: '' });
                         }
                       }}
-                      className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition ${
-                        imageInputType === 'upload'
-                          ? 'bg-gradient-to-r from-black to-gray-900 text-white'
-                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      }`}
+                      className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition ${imageInputType === 'upload'
+                        ? 'bg-gradient-to-r from-black to-gray-900 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
                     >
                       <i className="fa-solid fa-upload mr-2"></i>
                       Upload
@@ -560,10 +626,10 @@ export default function AdminDashboard() {
                         formData.image_data && formData.image_type
                           ? `data:${formData.image_type};base64,${formData.image_data}`
                           : formData.image.startsWith('db://') && editingProduct
-                          ? `/api/images/${editingProduct.id}`
-                          : formData.image.startsWith('/api/images/')
-                          ? formData.image
-                          : formData.image
+                            ? `/api/images/${editingProduct.id}`
+                            : formData.image.startsWith('/api/images/')
+                              ? formData.image
+                              : formData.image
                       }
                       alt="Preview"
                       className="w-full h-48 object-cover rounded-lg border border-gray-300"
@@ -578,13 +644,14 @@ export default function AdminDashboard() {
               <div className="flex gap-4 mt-6">
                 <button
                   onClick={handleSave}
-                  className="flex-1 px-6 py-2 bg-gradient-to-r from-black to-gray-900 text-white rounded-lg hover:from-gray-900 hover:to-black transition font-semibold"
+                  className="flex-1 px-6 py-3.5 sm:py-2 bg-gradient-to-r from-black to-gray-900 text-white rounded-lg hover:from-gray-900 hover:to-black transition font-semibold text-base"
                 >
+                  <i className="fa-solid fa-check mr-2"></i>
                   Save
                 </button>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+                  className="px-6 py-3.5 sm:py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition text-base"
                 >
                   Cancel
                 </button>
@@ -592,6 +659,15 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Variant Manager Modal */}
+      {variantProduct && (
+        <VariantManager
+          productId={variantProduct.id}
+          productName={variantProduct.name}
+          onClose={() => setVariantProduct(null)}
+        />
       )}
     </div>
   );
