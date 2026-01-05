@@ -42,7 +42,7 @@ export default function AdminLogin() {
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 space-y-6">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Login</h1>
-          <p className="text-gray-600">Luxe Living Admin Panel</p>
+          <p className="text-gray-600">Gangaram Enterprises Admin Panel</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

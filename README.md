@@ -1,6 +1,6 @@
-# Luxe Living - Next.js Website
+# Gangaram Enterprises - Next.js Website
 
-A modern, production-ready Next.js website for Luxe Living, a premium home interiors and furniture business based in Hyderabad, Telangana.
+A modern, production-ready Next.js website for Gangaram Enterprises, a premium home interiors and furniture business based in Hyderabad, Telangana.
 
 ## Features
 
@@ -126,5 +126,5 @@ Deploy to Vercel, Netlify, or any Node.js hosting platform.
 
 ## License
 
-© 2024 Luxe Living Interiors. All rights reserved.
+© 2024 Gangaram Enterprises Interiors. All rights reserved.
 
