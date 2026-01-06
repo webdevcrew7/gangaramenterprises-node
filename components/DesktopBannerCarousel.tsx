@@ -12,8 +12,9 @@ export default function DesktopBannerCarousel() {
     const containerRef = useRef<HTMLDivElement>(null)
 
     const slides = [
-        '/assets/banners/banner.png',
-        '/assets/banners/banner.jpg'
+        '/assets/banners/banner.webp',
+        '/assets/banners/banner3.webp',
+        '/assets/banners/banner2.webp'
     ]
 
     useEffect(() => {
