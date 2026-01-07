@@ -12,9 +12,9 @@ export default function MobileSaleBanner() {
   const containerRef = useRef<HTMLDivElement>(null)
 
   const slides = [
-    '/assets/banners/square.png',
-    '/assets/banners/square.png',
-    '/assets/banners/square.png',
+    '/assets/banners/square.webp',
+    '/assets/banners/square2.webp',
+    '/assets/banners/square3.webp',
   ]
 
   useEffect(() => {
