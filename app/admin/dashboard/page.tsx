@@ -270,19 +270,20 @@ export default function AdminDashboard() {
 
       {/* Main Content */}
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
-        <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
-          <div>
-            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Portfolio Items</h2>
-            <p className="text-xs sm:text-sm text-gray-500">{filteredProducts.length} of {products.length} items</p>
-          </div>
-          <button
-            onClick={handleAdd}
-            className="w-full sm:w-auto px-4 sm:px-6 py-3 sm:py-2 bg-gradient-to-r from-black to-gray-900 text-white rounded-lg hover:from-gray-900 hover:to-black transition font-semibold text-sm sm:text-base"
-          >
-            <i className="fa-solid fa-plus mr-2"></i>
-            Add Product
-          </button>
+        <div className="mb-4 sm:mb-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Portfolio Items</h2>
+          <p className="text-xs sm:text-sm text-gray-500">{filteredProducts.length} of {products.length} items</p>
         </div>
+
+        {/* Floating Add Product Button */}
+        <button
+          onClick={handleAdd}
+          className="fixed bottom-6 right-6 z-50 w-14 h-14 sm:w-auto sm:h-auto sm:px-6 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-full sm:rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all font-semibold shadow-lg hover:shadow-xl flex items-center justify-center gap-2 group"
+          title="Add Product"
+        >
+          <i className="fa-solid fa-plus text-xl sm:text-base"></i>
+          <span className="hidden sm:inline">Add Product</span>
+        </button>
 
         {/* Category Filters - horizontally scrollable on mobile */}
         <div className="mb-4 sm:mb-6 flex gap-2 overflow-x-auto pb-2 -mx-3 px-3 sm:mx-0 sm:px-0 sm:flex-wrap scrollbar-hide">
@@ -337,7 +338,7 @@ export default function AdminDashboard() {
                     }
                   }}
                 />
-                {product.is_hidden && (
+                {!!product.is_hidden && (
                   <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold">
                     Hidden
                   </div>

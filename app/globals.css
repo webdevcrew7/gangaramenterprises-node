@@ -745,6 +745,22 @@ button[id="explore-services-btn"]:hover {
   color: #c5a059;
 }
 
+.mobile-nav-item.call-item {
+  color: #3b82f6;
+}
+
+.mobile-nav-item.call-item:hover {
+  color: #60a5fa;
+}
+
+.mobile-nav-item.whatsapp-item {
+  color: #25D366;
+}
+
+.mobile-nav-item.whatsapp-item:hover {
+  color: #4ade80;
+}
+
 /* Drawer Animations */
 .mobile-menu-open {
   transform: translateX(0) !important;

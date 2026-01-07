@@ -24,6 +24,11 @@ export default function MobileBottomNav() {
         <i className="fa-solid fa-location-dot"></i>
         <span>Contact</span>
       </Link>
+      <a href="tel:+919640044469"
+        className="mobile-nav-item call-item">
+        <i className="fa-solid fa-phone"></i>
+        <span>Call</span>
+      </a>
       <a href="https://wa.me/919640044469" target="_blank" rel="noopener noreferrer"
         className="mobile-nav-item whatsapp-item">
         <i className="fa-brands fa-whatsapp"></i>
