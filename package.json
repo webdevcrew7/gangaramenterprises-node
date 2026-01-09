@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/sortablejs": "^1.15.9",
     "bcryptjs": "^3.0.3",
     "better-sqlite3": "^12.5.0",
     "cloudinary": "^2.8.0",
@@ -18,7 +19,8 @@
     "next": "^14.2.35",
     "next-auth": "^4.24.13",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "sortablejs": "^1.15.6"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

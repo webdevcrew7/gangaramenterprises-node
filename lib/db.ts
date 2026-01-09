@@ -68,15 +68,60 @@ export async function initDatabase() {
     `);
 
     /* ----------------------------
-     * Migrate: Add curtains to category ENUM if not exists
+     * variant_images table (multiple images per variant)
+     * ---------------------------- */
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS variant_images (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        variant_id INT NOT NULL,
+        image_url VARCHAR(500) NOT NULL,
+        display_order INT DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (variant_id) REFERENCES product_variants(id) ON DELETE CASCADE
+      )
+    `);
+
+    /* ----------------------------
+     * categories table (dynamic categories)
+     * ---------------------------- */
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS categories (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        slug VARCHAR(50) UNIQUE NOT NULL,
+        name VARCHAR(100) NOT NULL,
+        icon VARCHAR(50) DEFAULT 'fa-folder',
+        display_order INT DEFAULT 0,
+        is_active TINYINT(1) DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    /* ----------------------------
+     * Migrate: Insert default categories if empty
+     * ---------------------------- */
+    const [categoryRows] = await connection.query<any[]>('SELECT COUNT(*) AS count FROM categories');
+    if (categoryRows[0].count === 0) {
+      await connection.query(`
+        INSERT INTO categories (slug, name, icon, display_order) VALUES 
+        ('interiors', 'Interiors & Kitchens', 'fa-couch', 1),
+        ('theatre', 'Home Theatre', 'fa-tv', 2),
+        ('furniture', 'Furniture', 'fa-chair', 3),
+        ('curtains', 'Curtains & Blinds', 'fa-window-maximize', 4)
+      `);
+      console.log('Default categories created');
+    }
+
+    /* ----------------------------
+     * Migrate: Change products.category from ENUM to VARCHAR
      * ---------------------------- */
     try {
       await connection.query(`
         ALTER TABLE products 
-        MODIFY COLUMN category ENUM('interiors','theatre','furniture','decor','curtains') NOT NULL
+        MODIFY COLUMN category VARCHAR(50) NOT NULL
       `);
+      console.log('Migrated products.category to VARCHAR(50)');
     } catch (e) {
-      // Column may already have the correct enum, ignore error
+      // Column may already be VARCHAR, ignore error
     }
 
     /* ----------------------------

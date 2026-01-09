@@ -109,7 +109,7 @@ export async function PUT(
   }
 }
 
-// DELETE - Delete product (variants cascade deleted automatically)
+// DELETE - Delete product (with manual cascade for variant_images)
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -120,9 +120,27 @@ export async function DELETE(
   }
 
   try {
+    const productId = Number(params.id);
+
+    // First, get all variant IDs for this product
+    const [variants]: any = await pool.query(
+      'SELECT id FROM product_variants WHERE product_id = ?',
+      [productId]
+    );
+
+    // Delete variant_images for all variants of this product
+    if (variants.length > 0) {
+      const variantIds = variants.map((v: any) => v.id);
+      await pool.query(
+        `DELETE FROM variant_images WHERE variant_id IN (?)`,
+        [variantIds]
+      );
+    }
+
+    // Now delete the product (variants will cascade delete)
     const [result]: any = await pool.query(
       'DELETE FROM products WHERE id = ?',
-      [Number(params.id)]
+      [productId]
     );
 
     if (result.affectedRows === 0) {

@@ -4,7 +4,7 @@ import { Product, ProductVariant } from '@/types';
 
 export const runtime = 'nodejs';
 
-// Public API - Get visible products with their variants
+// Public API - Get visible products with their variants and images
 export async function GET() {
   try {
     // Fetch products
@@ -28,6 +28,8 @@ export async function GET() {
     const productIds = productRows.map((p: any) => p.id);
 
     let variantRows: any[] = [];
+    let variantImageRows: any[] = [];
+
     if (productIds.length > 0) {
       const [variants]: any = await pool.query(
         `
@@ -45,6 +47,34 @@ export async function GET() {
         [productIds]
       );
       variantRows = variants;
+
+      // Fetch all variant images
+      if (variantRows.length > 0) {
+        const variantIds = variantRows.map((v: any) => v.id);
+        const [images]: any = await pool.query(
+          `
+          SELECT
+            id,
+            variant_id,
+            image_url,
+            display_order
+          FROM variant_images
+          WHERE variant_id IN (?)
+          ORDER BY display_order ASC, id ASC
+          `,
+          [variantIds]
+        );
+        variantImageRows = images;
+      }
+    }
+
+    // Group images by variant_id
+    const imagesByVariant: Record<number, string[]> = {};
+    for (const img of variantImageRows) {
+      if (!imagesByVariant[img.variant_id]) {
+        imagesByVariant[img.variant_id] = [];
+      }
+      imagesByVariant[img.variant_id].push(img.image_url);
     }
 
     // Group variants by product_id
@@ -53,10 +83,17 @@ export async function GET() {
       if (!variantsByProduct[v.product_id]) {
         variantsByProduct[v.product_id] = [];
       }
+      // Get images for this variant, or use primary image as fallback
+      const additionalImages = imagesByVariant[v.id] || [];
+      const allImages = additionalImages.length > 0
+        ? [v.image, ...additionalImages]  // Primary image first, then additional
+        : [v.image];  // Just the primary image
+
       variantsByProduct[v.product_id].push({
         id: `${v.product_id}-${v.id}`,
         name: v.name,
         image: v.image,
+        images: allImages,
         color: v.color,
       });
     }
@@ -84,3 +121,4 @@ export async function GET() {
     );
   }
 }
+

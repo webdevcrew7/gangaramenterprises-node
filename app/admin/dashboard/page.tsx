@@ -2,20 +2,23 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Product, DatabaseProduct } from '@/types';
+import { Product, DatabaseProduct, DatabaseCategory } from '@/types';
 import VariantManager from '@/components/admin/VariantManager';
+import CategoryManager from '@/components/admin/CategoryManager';
 
 export default function AdminDashboard() {
   const [products, setProducts] = useState<DatabaseProduct[]>([]);
+  const [categories, setCategories] = useState<DatabaseCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showCategoryManager, setShowCategoryManager] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [variantProduct, setVariantProduct] = useState<DatabaseProduct | null>(null);
-  const [categoryFilter, setCategoryFilter] = useState<'all' | Product['category']>('all');
+  const [categoryFilter, setCategoryFilter] = useState<'all' | string>('all');
   const [formData, setFormData] = useState({
     name: '',
-    category: 'interiors' as Product['category'],
+    category: '' as string,
     description: '',
     image: '',
     image_data: '',
@@ -41,6 +44,7 @@ export default function AdminDashboard() {
       if (data.authenticated) {
         setAuthenticated(true);
         loadProducts();
+        loadCategories();
       } else {
         router.push('/admin/login');
       }
@@ -53,11 +57,25 @@ export default function AdminDashboard() {
     try {
       const response = await fetch('/api/admin/products?includeHidden=true');
       const data = await response.json();
-      setProducts(data.products);
+      setProducts(data.products || []);
       setLoading(false);
     } catch (error) {
       console.error('Failed to load products:', error);
       setLoading(false);
+    }
+  };
+
+  const loadCategories = async () => {
+    try {
+      const response = await fetch('/api/admin/categories');
+      const data = await response.json();
+      setCategories(data.categories || []);
+      // Set default category for form if we have categories
+      if (data.categories?.length > 0 && !formData.category) {
+        setFormData(prev => ({ ...prev, category: data.categories[0].slug }));
+      }
+    } catch (error) {
+      console.error('Failed to load categories:', error);
     }
   };
 
@@ -91,7 +109,7 @@ export default function AdminDashboard() {
     setEditingProduct(null);
     setFormData({
       name: '',
-      category: 'interiors',
+      category: categories[0]?.slug || 'interiors',
       description: '',
       image: '',
       image_data: '',
@@ -270,9 +288,18 @@ export default function AdminDashboard() {
 
       {/* Main Content */}
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
-        <div className="mb-4 sm:mb-6">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Portfolio Items</h2>
-          <p className="text-xs sm:text-sm text-gray-500">{filteredProducts.length} of {products.length} items</p>
+        <div className="mb-4 sm:mb-6 flex justify-between items-center">
+          <div>
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Portfolio Items</h2>
+            <p className="text-xs sm:text-sm text-gray-500">{filteredProducts.length} of {products.length} items</p>
+          </div>
+          <button
+            onClick={() => setShowCategoryManager(true)}
+            className="px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm"
+          >
+            <i className="fa-solid fa-folder-open mr-2"></i>
+            <span className="hidden sm:inline">Manage </span>Categories
+          </button>
         </div>
 
         {/* Floating Add Product Button */}
@@ -287,29 +314,33 @@ export default function AdminDashboard() {
 
         {/* Category Filters - horizontally scrollable on mobile */}
         <div className="mb-4 sm:mb-6 flex gap-2 overflow-x-auto pb-2 -mx-3 px-3 sm:mx-0 sm:px-0 sm:flex-wrap scrollbar-hide">
-          {[
-            { key: 'all', label: 'All', icon: 'fa-th-large' },
-            { key: 'interiors', label: 'Interiors', icon: 'fa-couch' },
-            { key: 'theatre', label: 'Home Theatre', icon: 'fa-tv' },
-            { key: 'furniture', label: 'Furniture', icon: 'fa-chair' },
-            { key: 'curtains', label: 'Curtains', icon: 'fa-curtain' },
-          ].map((cat) => (
+          {/* All button */}
+          <button
+            onClick={() => setCategoryFilter('all')}
+            className={`flex-shrink-0 px-3 sm:px-4 py-2.5 sm:py-2 rounded-lg font-medium transition flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base ${categoryFilter === 'all'
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+              }`}
+          >
+            <i className="fa-solid fa-th-large"></i>
+            <span className="whitespace-nowrap">All</span>
+          </button>
+          {/* Dynamic category buttons */}
+          {categories.map((cat) => (
             <button
-              key={cat.key}
-              onClick={() => setCategoryFilter(cat.key as any)}
-              className={`flex-shrink-0 px-3 sm:px-4 py-2.5 sm:py-2 rounded-lg font-medium transition flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base ${categoryFilter === cat.key
+              key={cat.slug}
+              onClick={() => setCategoryFilter(cat.slug)}
+              className={`flex-shrink-0 px-3 sm:px-4 py-2.5 sm:py-2 rounded-lg font-medium transition flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base ${categoryFilter === cat.slug
                 ? 'bg-blue-600 text-white shadow-md'
                 : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                 }`}
             >
               <i className={`fa-solid ${cat.icon}`}></i>
-              <span className="whitespace-nowrap">{cat.label}</span>
-              {cat.key !== 'all' && (
-                <span className={`text-xs px-1.5 py-0.5 rounded-full ${categoryFilter === cat.key ? 'bg-white/20' : 'bg-gray-100'
-                  }`}>
-                  {products.filter(p => p.category === cat.key).length}
-                </span>
-              )}
+              <span className="whitespace-nowrap">{cat.name}</span>
+              <span className={`text-xs px-1.5 py-0.5 rounded-full ${categoryFilter === cat.slug ? 'bg-white/20' : 'bg-gray-100'
+                }`}>
+                {products.filter(p => p.category === cat.slug).length}
+              </span>
             </button>
           ))}
         </div>
@@ -442,13 +473,12 @@ export default function AdminDashboard() {
                   </label>
                   <select
                     value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value as Product['category'] })}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                     className="w-full px-4 py-3 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent text-base bg-white"
                   >
-                    <option value="interiors">Interiors</option>
-                    <option value="theatre">Home Theatre</option>
-                    <option value="furniture">Furniture</option>
-                    <option value="curtains">Curtains</option>
+                    {categories.map((cat) => (
+                      <option key={cat.slug} value={cat.slug}>{cat.name}</option>
+                    ))}
                   </select>
                 </div>
 
@@ -668,6 +698,14 @@ export default function AdminDashboard() {
           productId={variantProduct.id}
           productName={variantProduct.name}
           onClose={() => setVariantProduct(null)}
+        />
+      )}
+
+      {/* Category Manager Modal */}
+      {showCategoryManager && (
+        <CategoryManager
+          onClose={() => setShowCategoryManager(false)}
+          onCategoriesChange={() => loadCategories()}
         />
       )}
     </div>

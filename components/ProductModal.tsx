@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { Product } from '@/types'
+import { Product, ProductVariant } from '@/types'
 import { getCategoryName } from '@/lib/products'
 import Image from 'next/image'
 
@@ -13,25 +13,27 @@ interface ProductModalProps {
 }
 
 export default function ProductModal({ product, variantId, onClose }: ProductModalProps) {
-  const [currentVariantIndex, setCurrentVariantIndex] = useState(0)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [mounted, setMounted] = useState(false)
 
+  // Find the selected variant
+  const variant = product?.variants.find(v => v.id === variantId) || product?.variants[0]
+
+  // Use the real images array from the variant (includes primary + additional images)
+  const variantImages = variant?.images || (variant ? [variant.image] : [])
+
+  // Reset image index when variant changes
   useEffect(() => {
-    if (product && variantId) {
-      const index = product.variants.findIndex(v => v.id === variantId)
-      if (index !== -1) {
-        setCurrentVariantIndex(index)
-      }
-    }
-  }, [product, variantId])
+    setCurrentImageIndex(0)
+  }, [variantId])
 
   useEffect(() => {
     if (product) {
       document.body.style.overflow = 'hidden'
       const handleEscape = (e: KeyboardEvent) => {
         if (e.key === 'Escape') onClose()
-        if (e.key === 'ArrowLeft') navigateModal(-1)
-        if (e.key === 'ArrowRight') navigateModal(1)
+        if (e.key === 'ArrowLeft') navigateImages(-1)
+        if (e.key === 'ArrowRight') navigateImages(1)
       }
       document.addEventListener('keydown', handleEscape)
       return () => {
@@ -47,17 +49,15 @@ export default function ProductModal({ product, variantId, onClose }: ProductMod
     return () => setMounted(false)
   }, [])
 
-  if (!product || !mounted) return null
+  if (!product || !mounted || !variant) return null
 
-  const variant = product.variants[currentVariantIndex]
-
-  const navigateModal = (direction: number) => {
-    const totalVariants = product.variants.length
-    setCurrentVariantIndex((prev) => (prev + direction + totalVariants) % totalVariants)
+  const navigateImages = (direction: number) => {
+    const totalImages = variantImages.length
+    setCurrentImageIndex((prev) => (prev + direction + totalImages) % totalImages)
   }
 
-  const selectVariant = (index: number) => {
-    setCurrentVariantIndex(index)
+  const selectImage = (index: number) => {
+    setCurrentImageIndex(index)
   }
 
   const whatsappMessage = encodeURIComponent(
@@ -84,19 +84,19 @@ export default function ProductModal({ product, variantId, onClose }: ProductMod
           <i className="fa-solid fa-xmark"></i>
         </button>
 
-        {product.variants.length > 1 && (
+        {variantImages.length > 1 && (
           <>
             <button
               className="product-modal-nav product-modal-prev"
-              onClick={() => navigateModal(-1)}
-              aria-label="Previous variant"
+              onClick={() => navigateImages(-1)}
+              aria-label="Previous image"
             >
               <i className="fa-solid fa-chevron-left"></i>
             </button>
             <button
               className="product-modal-nav product-modal-next"
-              onClick={() => navigateModal(1)}
-              aria-label="Next variant"
+              onClick={() => navigateImages(1)}
+              aria-label="Next image"
             >
               <i className="fa-solid fa-chevron-right"></i>
             </button>
@@ -107,8 +107,8 @@ export default function ProductModal({ product, variantId, onClose }: ProductMod
           <div className="product-modal-image-wrap">
             <Image
               id="modal-image"
-              src={variant.image}
-              alt={`${product.name} - ${variant.name}`}
+              src={variantImages[currentImageIndex]}
+              alt={`${product.name} - ${variant.name} - Image ${currentImageIndex + 1}`}
               width={600}
               height={600}
               className="product-modal-image"
@@ -122,6 +122,10 @@ export default function ProductModal({ product, variantId, onClose }: ProductMod
                 {product.badge}
               </div>
             )}
+            {/* Image counter indicator */}
+            <div className="product-modal-image-counter">
+              {currentImageIndex + 1} / {variantImages.length}
+            </div>
           </div>
 
           <div className="product-modal-info">
@@ -138,17 +142,18 @@ export default function ProductModal({ product, variantId, onClose }: ProductMod
               {product.description}
             </p>
 
-            {product.variants.length > 1 && (
+            {/* Image thumbnails for this variant */}
+            {variantImages.length > 1 && (
               <div className="product-modal-thumbs" id="modal-thumbs">
-                {product.variants.map((v, i) => (
+                {variantImages.map((img, i) => (
                   <div
-                    key={v.id}
-                    className={`product-modal-thumb ${i === currentVariantIndex ? 'active' : ''}`}
-                    onClick={() => selectVariant(i)}
+                    key={i}
+                    className={`product-modal-thumb ${i === currentImageIndex ? 'active' : ''}`}
+                    onClick={() => selectImage(i)}
                   >
                     <Image
-                      src={v.image}
-                      alt={v.name}
+                      src={img}
+                      alt={`${variant.name} - Image ${i + 1}`}
                       width={44}
                       height={44}
                       className="w-full h-full object-cover"

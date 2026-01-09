@@ -79,8 +79,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const validCategories = ['interiors', 'theatre', 'furniture', 'curtains'];
-    if (!validCategories.includes(category)) {
+    // Validate category exists in database
+    const [categoryRows] = await pool.query<any[]>(
+      'SELECT slug FROM categories WHERE slug = ?',
+      [category]
+    );
+    if (categoryRows.length === 0) {
       return NextResponse.json(
         { error: 'Invalid category' },
         { status: 400 }

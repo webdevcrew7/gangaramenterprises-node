@@ -1,14 +1,15 @@
 export interface ProductVariant {
   id: string;
   name: string;
-  image: string;
+  image: string;      // Primary image (first image / thumbnail)
+  images: string[];   // All images for this variant
   color: string;
 }
 
 export interface Product {
   id: number;
   name: string;
-  category: 'interiors' | 'theatre' | 'furniture' | 'curtains';
+  category: string; // Dynamic category slug
   description: string;
   badge?: string;
   onSale?: boolean;
@@ -18,7 +19,7 @@ export interface Product {
 export interface DatabaseProduct {
   id: number;
   name: string;
-  category: 'interiors' | 'theatre' | 'furniture' | 'curtains';
+  category: string; // Dynamic category slug
   description: string;
   badge?: string;
   on_sale: number;
@@ -38,10 +39,26 @@ export interface DatabaseVariant {
   display_order: number;
 }
 
-export type Category = 'all' | 'sale' | Product['category'];
+export interface DatabaseVariantImage {
+  id: number;
+  variant_id: number;
+  image_url: string;
+  display_order: number;
+}
+
+export interface DatabaseCategory {
+  id: number;
+  slug: string;
+  name: string;
+  icon: string;
+  display_order: number;
+  is_active: number;
+  created_at?: string;
+}
+
+export type Category = 'all' | 'sale' | string;
 
 export interface CartItem extends Product {
   cartItemId: string;
   selectedVariant: ProductVariant;
 }
-
