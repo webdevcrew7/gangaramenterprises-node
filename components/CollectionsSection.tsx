@@ -1,19 +1,27 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { getCategoryName, categories } from '@/lib/products'
 import { Product } from '@/types'
 import ProductRow from './ProductRow'
 import { useCategory } from '@/contexts/CategoryContext'
 
+interface Category {
+  slug: string
+  name: string
+  icon: string
+  image: string | null
+}
+
 export default function CollectionsSection() {
   const { selectedCategory, setSelectedCategory } = useCategory()
   const [products, setProducts] = useState<Product[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
 
-  // Fetch products from API
+  // Fetch products and categories from API
   useEffect(() => {
     fetchProducts()
+    fetchCategories()
   }, [])
 
   const fetchProducts = async () => {
@@ -29,6 +37,16 @@ export default function CollectionsSection() {
     }
   }
 
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/categories')
+      const data = await response.json()
+      setCategories(data.categories || [])
+    } catch (error) {
+      console.error('Failed to fetch categories:', error)
+    }
+  }
+
   const filteredProducts =
     selectedCategory === 'sale'
       ? products.filter((p) => p.onSale)
@@ -38,10 +56,7 @@ export default function CollectionsSection() {
     setSelectedCategory(category)
   }
 
-  // Initialize with 'interiors' category on mount
-  useEffect(() => {
-    setSelectedCategory('interiors')
-  }, [])
+
 
   return (
     <section id="collections" className="py-16 bg-white flex-grow w-full overflow-hidden">
@@ -54,39 +69,44 @@ export default function CollectionsSection() {
         </div>
 
         <div className="flex flex-wrap justify-center gap-4 md:gap-8 mb-10" id="category-filters">
+          {/* On Sale button - always first */}
+          <button
+            data-category="sale"
+            onClick={() => handleCategoryClick('sale')}
+            className={`category-btn flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-all group ${selectedCategory === 'sale' ? 'category-active' : ''} sale-flash`}
+          >
+            <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 transition-all border-red-400 group-hover:border-red-500 bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center">
+              <span className="text-3xl md:text-4xl">🔥</span>
+            </div>
+            <span className="text-xs md:text-sm text-red-600 group-hover:text-red-700 font-bold">
+              On Sale
+            </span>
+          </button>
+
+          {/* Dynamic categories from database */}
           {categories.map((category) => (
             <button
-              key={category.key}
-              data-category={category.key}
-              onClick={() => handleCategoryClick(category.key)}
-              className={`category-btn flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-all group ${selectedCategory === category.key ? 'category-active' : ''
-                } ${category.key === 'sale' ? 'sale-flash' : ''}`}
+              key={category.slug}
+              data-category={category.slug}
+              onClick={() => handleCategoryClick(category.slug)}
+              className={`category-btn flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-all group ${selectedCategory === category.slug ? 'category-active' : ''}`}
             >
               <div
-                className={`w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 transition-all ${category.key === 'sale'
-                  ? 'border-red-400 group-hover:border-red-500 bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center'
-                  : 'border-transparent group-hover:border-gold-500'
-                  } ${selectedCategory === category.key && category.key !== 'sale' ? 'border-gold-500' : ''}`}
+                className={`w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 transition-all border-transparent group-hover:border-gold-500 bg-gray-100 flex items-center justify-center ${selectedCategory === category.slug ? 'border-gold-500' : ''}`}
               >
-                {category.icon ? (
-                  <span className="text-3xl md:text-4xl">{category.icon}</span>
+                {category.image ? (
+                  <img src={category.image} alt={category.name} className="w-full h-full object-cover" />
                 ) : (
-                  <img
-                    src={category.image}
-                    alt={category.label}
-                    className="w-full h-full object-cover"
-                  />
+                  <i className={`fa-solid ${category.icon} text-2xl md:text-3xl text-gray-600`}></i>
                 )}
               </div>
               <span
-                className={`text-xs md:text-sm ${category.key === 'sale'
-                  ? 'text-red-600 group-hover:text-red-700 font-bold'
-                  : selectedCategory === category.key
-                    ? 'text-gold-600 font-semibold'
-                    : 'text-slate-700 group-hover:text-gold-600 font-medium'
+                className={`text-xs md:text-sm ${selectedCategory === category.slug
+                  ? 'text-gold-600 font-semibold'
+                  : 'text-slate-700 group-hover:text-gold-600 font-medium'
                   }`}
               >
-                {category.label}
+                {category.name}
               </span>
             </button>
           ))}

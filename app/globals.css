@@ -1085,15 +1085,16 @@ button[id="explore-services-btn"]:hover {
 /* Image counter indicator for variant images */
 .product-modal-image-counter {
   position: absolute;
-  bottom: 12px;
-  right: 12px;
-  background: rgba(0, 0, 0, 0.7);
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.6);
   color: #fff;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.35rem 0.75rem;
-  border-radius: 20px;
-  letter-spacing: 0.05em;
+  font-size: 0.6rem;
+  font-weight: 500;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  letter-spacing: 0.03em;
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
 }

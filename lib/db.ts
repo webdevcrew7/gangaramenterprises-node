@@ -29,9 +29,22 @@ export async function initDatabase() {
         id INT PRIMARY KEY AUTO_INCREMENT,
         username VARCHAR(100) UNIQUE NOT NULL,
         password_hash VARCHAR(255) NOT NULL,
+        role ENUM('admin', 'developer') DEFAULT 'admin',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
+
+    /* ----------------------------
+     * Migrate: Add role column if not exists
+     * ---------------------------- */
+    try {
+      await connection.query(`
+        ALTER TABLE admin_users ADD COLUMN role ENUM('admin', 'developer') DEFAULT 'admin' AFTER password_hash
+      `);
+      console.log('Migrated admin_users: added role column');
+    } catch (e) {
+      // Column may already exist
+    }
 
     /* ----------------------------
      * products table (with curtains category and on_sale)

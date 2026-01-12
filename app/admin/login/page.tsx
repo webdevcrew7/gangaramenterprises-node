@@ -38,8 +38,8 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
-      <div className="max-w-md w-full bg-blue-900 rounded-2xl shadow-xl p-8 space-y-6">
+    <div className="h-screen overflow-hidden flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
+      <div className="max-w-md w-full bg-blue-900 rounded-2xl shadow-xl p-6 sm:p-8 space-y-4 sm:space-y-6">
         <div className="text-center flex flex-col items-center">
           <img src="/assets/new-logo.png" style={{ maxWidth: '50%' }} alt="Gangaram-Enterprises-Logo" className="mx-auto" />
           <h1 className="text-3xl font-bold text-white mb-2">Admin Login</h1>

@@ -1,10 +1,32 @@
 'use client'
 
-import Image from 'next/image'
+import { useEffect, useState } from 'react'
 import { useCategory } from '@/contexts/CategoryContext'
+
+interface Category {
+  slug: string
+  name: string
+  icon: string
+  image: string | null
+}
 
 export default function MobileCategoryStrip() {
   const { selectedCategory, setSelectedCategory } = useCategory()
+  const [categories, setCategories] = useState<Category[]>([])
+
+  useEffect(() => {
+    fetchCategories()
+  }, [])
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/categories')
+      const data = await response.json()
+      setCategories(data.categories || [])
+    } catch (error) {
+      console.error('Failed to fetch categories:', error)
+    }
+  }
 
   const scrollToCategory = (category: string) => {
     // Update the shared state directly
@@ -26,32 +48,38 @@ export default function MobileCategoryStrip() {
     }
   }
 
-  const categories = [
-    { key: 'sale', label: 'On Sale', icon: '🔥', isSale: true },
-    { key: 'interiors', label: 'Interiors', image: '/assets/Interiors/Design1.webp' },
-    { key: 'theatre', label: 'Theatre', image: '/assets/Home Theatre/HT1.webp' },
-    { key: 'furniture', label: 'Furniture', image: '/assets/Furniture/sofa1.webp' },
-    { key: 'curtains', label: 'Curtains', image: '/assets/Curtains/Curtain1.webp' },
-  ]
-
   return (
     <section className="mobile-category-strip">
+      {/* On Sale - always first */}
+      <a
+        href="#collections"
+        className={`category-icon-item sale-icon ${selectedCategory === 'sale' ? 'active' : ''}`}
+        data-category="sale"
+        onClick={(e) => { e.preventDefault(); scrollToCategory('sale') }}
+      >
+        <div className={`icon-circle ${selectedCategory === 'sale' ? 'selected' : ''}`}>
+          <span style={{ fontSize: '24px' }}>🔥</span>
+        </div>
+        <span className={selectedCategory === 'sale' ? 'text-gold-600 font-semibold' : ''}>On Sale</span>
+      </a>
+
+      {/* Dynamic categories from database */}
       {categories.map((cat) => (
         <a
-          key={cat.key}
+          key={cat.slug}
           href="#collections"
-          className={`category-icon-item ${cat.isSale ? 'sale-icon' : ''} ${selectedCategory === cat.key ? 'active' : ''}`}
-          data-category={cat.key}
-          onClick={(e) => { e.preventDefault(); scrollToCategory(cat.key) }}
+          className={`category-icon-item ${selectedCategory === cat.slug ? 'active' : ''}`}
+          data-category={cat.slug}
+          onClick={(e) => { e.preventDefault(); scrollToCategory(cat.slug) }}
         >
-          <div className={`icon-circle ${selectedCategory === cat.key ? 'selected' : ''}`}>
-            {cat.icon ? (
-              <span style={{ fontSize: '24px' }}>{cat.icon}</span>
+          <div className={`icon-circle ${selectedCategory === cat.slug ? 'selected' : ''}`}>
+            {cat.image ? (
+              <img src={cat.image} alt={cat.name} className="w-full h-full object-cover rounded-full" />
             ) : (
-              <Image src={cat.image!} alt={cat.label} width={52} height={52} className="w-full h-full object-cover" unoptimized />
+              <i className={`fa-solid ${cat.icon}`} style={{ fontSize: '20px' }}></i>
             )}
           </div>
-          <span className={selectedCategory === cat.key ? 'text-gold-600 font-semibold' : ''}>{cat.label}</span>
+          <span className={selectedCategory === cat.slug ? 'text-gold-600 font-semibold' : ''}>{cat.name}</span>
         </a>
       ))}
     </section>

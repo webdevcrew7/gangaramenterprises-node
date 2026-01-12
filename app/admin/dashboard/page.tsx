@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Product, DatabaseProduct, DatabaseCategory } from '@/types';
 import VariantManager from '@/components/admin/VariantManager';
 import CategoryManager from '@/components/admin/CategoryManager';
+import UserManager from '@/components/admin/UserManager';
 
 export default function AdminDashboard() {
   const [products, setProducts] = useState<DatabaseProduct[]>([]);
@@ -13,6 +14,8 @@ export default function AdminDashboard() {
   const [authenticated, setAuthenticated] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showCategoryManager, setShowCategoryManager] = useState(false);
+  const [showUserManager, setShowUserManager] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<number>(0);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [variantProduct, setVariantProduct] = useState<DatabaseProduct | null>(null);
   const [categoryFilter, setCategoryFilter] = useState<'all' | string>('all');
@@ -43,6 +46,9 @@ export default function AdminDashboard() {
       const data = await response.json();
       if (data.authenticated) {
         setAuthenticated(true);
+        if (data.user?.userId) {
+          setCurrentUserId(data.user.userId);
+        }
         loadProducts();
         loadCategories();
       } else {
@@ -267,6 +273,14 @@ export default function AdminDashboard() {
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Admin Dashboard</h1>
           <div className="flex items-center gap-2 sm:gap-4">
+            <button
+              onClick={() => setShowUserManager(true)}
+              className="px-3 sm:px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm sm:text-base"
+              title="User Management"
+            >
+              <i className="fa-solid fa-users-gear sm:mr-2"></i>
+              <span className="hidden sm:inline">Users</span>
+            </button>
             <a
               href="/"
               className="text-gray-600 hover:text-gray-900 transition text-sm sm:text-base"
@@ -706,6 +720,14 @@ export default function AdminDashboard() {
         <CategoryManager
           onClose={() => setShowCategoryManager(false)}
           onCategoriesChange={() => loadCategories()}
+        />
+      )}
+
+      {/* User Manager Modal */}
+      {showUserManager && (
+        <UserManager
+          onClose={() => setShowUserManager(false)}
+          currentUserId={currentUserId}
         />
       )}
     </div>
