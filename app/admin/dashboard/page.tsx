@@ -6,6 +6,7 @@ import { Product, DatabaseProduct, DatabaseCategory } from '@/types';
 import VariantManager from '@/components/admin/VariantManager';
 import CategoryManager from '@/components/admin/CategoryManager';
 import UserManager from '@/components/admin/UserManager';
+import TestimonialManager from '@/components/admin/TestimonialManager';
 
 export default function AdminDashboard() {
   const [products, setProducts] = useState<DatabaseProduct[]>([]);
@@ -15,6 +16,7 @@ export default function AdminDashboard() {
   const [showModal, setShowModal] = useState(false);
   const [showCategoryManager, setShowCategoryManager] = useState(false);
   const [showUserManager, setShowUserManager] = useState(false);
+  const [showTestimonialManager, setShowTestimonialManager] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<number>(0);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [variantProduct, setVariantProduct] = useState<DatabaseProduct | null>(null);
@@ -307,13 +309,23 @@ export default function AdminDashboard() {
             <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Portfolio Items</h2>
             <p className="text-xs sm:text-sm text-gray-500">{filteredProducts.length} of {products.length} items</p>
           </div>
-          <button
-            onClick={() => setShowCategoryManager(true)}
-            className="px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm"
-          >
-            <i className="fa-solid fa-folder-open mr-2"></i>
-            <span className="hidden sm:inline">Manage </span>Categories
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowTestimonialManager(true)}
+              className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm"
+              title="Manage Video Testimonials"
+            >
+              <i className="fa-brands fa-youtube mr-2"></i>
+              <span className="hidden sm:inline">Testimonials</span>
+            </button>
+            <button
+              onClick={() => setShowCategoryManager(true)}
+              className="px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm"
+            >
+              <i className="fa-solid fa-folder-open mr-2"></i>
+              <span className="hidden sm:inline">Manage </span>Categories
+            </button>
+          </div>
         </div>
 
         {/* Floating Add Product Button */}
@@ -348,20 +360,20 @@ export default function AdminDashboard() {
                 key={cat.slug}
                 onClick={() => setCategoryFilter(cat.slug)}
                 className={`flex-shrink-0 px-3 sm:px-4 py-2.5 sm:py-2 rounded-lg font-medium transition flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base ${categoryFilter === cat.slug
-                    ? 'bg-blue-600 text-white shadow-md'
-                    : isEmpty
-                      ? 'bg-yellow-50 text-yellow-700 border border-yellow-300 hover:bg-yellow-100'
-                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  ? 'bg-blue-600 text-white shadow-md'
+                  : isEmpty
+                    ? 'bg-yellow-50 text-yellow-700 border border-yellow-300 hover:bg-yellow-100'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
                   }`}
                 title={isEmpty ? 'This category has no products and is hidden on the website' : ''}
               >
                 <i className={`fa-solid ${cat.icon}`}></i>
                 <span className="whitespace-nowrap">{cat.name}</span>
                 <span className={`text-xs px-1.5 py-0.5 rounded-full flex items-center gap-1 ${categoryFilter === cat.slug
-                    ? 'bg-white/20'
-                    : isEmpty
-                      ? 'bg-yellow-200 text-yellow-800'
-                      : 'bg-gray-100'
+                  ? 'bg-white/20'
+                  : isEmpty
+                    ? 'bg-yellow-200 text-yellow-800'
+                    : 'bg-gray-100'
                   }`}>
                   {isEmpty && <i className="fa-solid fa-eye-slash text-[10px]"></i>}
                   {productCount}
@@ -740,6 +752,13 @@ export default function AdminDashboard() {
         <UserManager
           onClose={() => setShowUserManager(false)}
           currentUserId={currentUserId}
+        />
+      )}
+
+      {/* Testimonial Manager Modal */}
+      {showTestimonialManager && (
+        <TestimonialManager
+          onClose={() => setShowTestimonialManager(false)}
         />
       )}
     </div>

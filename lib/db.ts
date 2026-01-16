@@ -110,6 +110,21 @@ export async function initDatabase() {
     `);
 
     /* ----------------------------
+     * testimonial_videos table (YouTube video testimonials)
+     * ---------------------------- */
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS testimonial_videos (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        youtube_url VARCHAR(500) NOT NULL,
+        video_id VARCHAR(50) NOT NULL,
+        title VARCHAR(255) DEFAULT '',
+        display_order INT DEFAULT 0,
+        is_active TINYINT(1) DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    /* ----------------------------
      * Migrate: Insert default categories if empty
      * ---------------------------- */
     const [categoryRows] = await connection.query<any[]>('SELECT COUNT(*) AS count FROM categories');

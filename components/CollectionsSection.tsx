@@ -68,7 +68,7 @@ export default function CollectionsSection() {
           </h2>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-4 md:gap-8 mb-10" id="category-filters">
+        <div className="flex flex-row justify-center gap-2 md:gap-4 mb-10 overflow-x-auto scrollbar-hide" id="category-filters" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           {/* On Sale button - always first */}
           <button
             data-category="sale"

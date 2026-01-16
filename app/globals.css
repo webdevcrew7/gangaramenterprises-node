@@ -18,6 +18,16 @@ body {
   padding: 0;
 }
 
+/* Scrollbar hide utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Animation Utilities */
 .fade-in-up {
   animation: fadeInUp 0.6s ease-out forwards;
@@ -1432,18 +1442,11 @@ button[id="explore-services-btn"]:hover {
   }
 
   #category-filters {
-    flex-wrap: nowrap !important;
-    overflow-x: auto;
-    justify-content: flex-start !important;
-    gap: 12px !important;
+    flex-wrap: wrap !important;
+    overflow-x: visible;
+    justify-content: center !important;
+    gap: 8px !important;
     padding-bottom: 8px;
-    margin-left: -1rem;
-    margin-right: -1rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
   }
 
   #category-filters::-webkit-scrollbar {
@@ -1452,11 +1455,17 @@ button[id="explore-services-btn"]:hover {
 
   .category-btn {
     flex-shrink: 0;
+    width: calc(25% - 6px);
+    max-width: 80px;
   }
 
   .category-btn>div:first-child {
-    width: 60px !important;
-    height: 60px !important;
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .category-btn span {
+    font-size: 0.65rem !important;
   }
 
   footer {
