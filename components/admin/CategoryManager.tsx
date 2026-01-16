@@ -185,6 +185,16 @@ export default function CategoryManager({ onClose, onCategoriesChange }: Categor
                                 {editingCategory ? 'Edit Category' : 'Add New Category'}
                             </h3>
 
+                            {/* Info alert for new categories */}
+                            {!editingCategory && (
+                                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-2">
+                                    <i className="fa-solid fa-info-circle text-blue-500 mt-0.5"></i>
+                                    <p className="text-sm text-blue-700">
+                                        New categories will only appear on the website once you add at least one product to them.
+                                    </p>
+                                </div>
+                            )}
+
                             <div className="grid grid-cols-1 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium mb-1">Name *</label>
@@ -295,8 +305,21 @@ export default function CategoryManager({ onClose, onCategoriesChange }: Categor
                                         <i className={`fa-solid ${category.icon}`}></i>
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h4 className="font-semibold text-gray-900 truncate">{category.name}</h4>
-                                        <p className="text-xs text-gray-500">/{category.slug}</p>
+                                        <div className="flex items-center gap-2">
+                                            <h4 className="font-semibold text-gray-900 truncate">{category.name}</h4>
+                                            {(category as any).product_count === 0 && (
+                                                <span className="px-2 py-0.5 text-xs bg-yellow-100 text-yellow-700 rounded-full flex items-center gap-1">
+                                                    <i className="fa-solid fa-eye-slash text-[10px]"></i>
+                                                    Hidden
+                                                </span>
+                                            )}
+                                        </div>
+                                        <p className="text-xs text-gray-500">
+                                            /{category.slug} • {(category as any).product_count || 0} product{(category as any).product_count !== 1 ? 's' : ''}
+                                            {(category as any).product_count === 0 && (
+                                                <span className="text-yellow-600 ml-1">(not visible on website)</span>
+                                            )}
+                                        </p>
                                     </div>
                                     <span className="text-xs text-gray-400">Order: {category.display_order}</span>
                                     <div className="flex gap-2">

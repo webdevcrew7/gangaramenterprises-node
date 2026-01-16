@@ -98,11 +98,6 @@ export default function AdminLogin() {
             )}
           </button>
         </form>
-
-        <div className="text-center text-xs text-blue-200 pt-4 border-t border-blue-700">
-          <p>Default credentials: admin / admin123</p>
-          <p className="mt-1 text-yellow-300">⚠️ Change password in production!</p>
-        </div>
       </div>
     </div>
   );

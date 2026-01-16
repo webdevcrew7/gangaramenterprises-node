@@ -3,10 +3,12 @@ import pool from '@/lib/db';
 
 /**
  * GET /api/categories - Public endpoint to list active categories with representative images
+ * Only returns categories that have at least one visible product
  */
 export async function GET() {
     try {
-        // Get categories with the first product's first variant image (oldest product/variant)
+        // Get categories with the first product's first variant image
+        // Only include categories that have at least one visible product
         const [rows] = await pool.query(`
             SELECT 
                 c.slug, 
@@ -20,9 +22,15 @@ export async function GET() {
                     WHERE p.category = c.slug AND p.is_hidden = 0
                     ORDER BY p.id ASC, pv.id ASC 
                     LIMIT 1
-                ) as image
+                ) as image,
+                (
+                    SELECT COUNT(*) 
+                    FROM products p 
+                    WHERE p.category = c.slug AND p.is_hidden = 0
+                ) as product_count
             FROM categories c 
             WHERE c.is_active = 1 
+            HAVING product_count > 0
             ORDER BY c.display_order ASC
         `);
         return NextResponse.json({ categories: rows });

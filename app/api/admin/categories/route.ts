@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
 
-// GET - Fetch all categories
+// GET - Fetch all categories with product counts
 export async function GET() {
     try {
-        const [categories] = await pool.query(
-            'SELECT * FROM categories ORDER BY display_order ASC, name ASC'
-        );
+        const [categories] = await pool.query(`
+            SELECT 
+                c.*,
+                (SELECT COUNT(*) FROM products p WHERE p.category = c.slug AND p.is_hidden = 0) as product_count
+            FROM categories c 
+            ORDER BY c.display_order ASC, c.name ASC
+        `);
 
         return NextResponse.json({ categories });
     } catch (error) {

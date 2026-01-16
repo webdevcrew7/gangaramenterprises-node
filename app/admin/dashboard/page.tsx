@@ -340,23 +340,35 @@ export default function AdminDashboard() {
             <span className="whitespace-nowrap">All</span>
           </button>
           {/* Dynamic category buttons */}
-          {categories.map((cat) => (
-            <button
-              key={cat.slug}
-              onClick={() => setCategoryFilter(cat.slug)}
-              className={`flex-shrink-0 px-3 sm:px-4 py-2.5 sm:py-2 rounded-lg font-medium transition flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base ${categoryFilter === cat.slug
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                }`}
-            >
-              <i className={`fa-solid ${cat.icon}`}></i>
-              <span className="whitespace-nowrap">{cat.name}</span>
-              <span className={`text-xs px-1.5 py-0.5 rounded-full ${categoryFilter === cat.slug ? 'bg-white/20' : 'bg-gray-100'
-                }`}>
-                {products.filter(p => p.category === cat.slug).length}
-              </span>
-            </button>
-          ))}
+          {categories.map((cat) => {
+            const productCount = products.filter(p => p.category === cat.slug).length;
+            const isEmpty = productCount === 0;
+            return (
+              <button
+                key={cat.slug}
+                onClick={() => setCategoryFilter(cat.slug)}
+                className={`flex-shrink-0 px-3 sm:px-4 py-2.5 sm:py-2 rounded-lg font-medium transition flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base ${categoryFilter === cat.slug
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : isEmpty
+                      ? 'bg-yellow-50 text-yellow-700 border border-yellow-300 hover:bg-yellow-100'
+                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  }`}
+                title={isEmpty ? 'This category has no products and is hidden on the website' : ''}
+              >
+                <i className={`fa-solid ${cat.icon}`}></i>
+                <span className="whitespace-nowrap">{cat.name}</span>
+                <span className={`text-xs px-1.5 py-0.5 rounded-full flex items-center gap-1 ${categoryFilter === cat.slug
+                    ? 'bg-white/20'
+                    : isEmpty
+                      ? 'bg-yellow-200 text-yellow-800'
+                      : 'bg-gray-100'
+                  }`}>
+                  {isEmpty && <i className="fa-solid fa-eye-slash text-[10px]"></i>}
+                  {productCount}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Products Grid - single column on mobile */}
