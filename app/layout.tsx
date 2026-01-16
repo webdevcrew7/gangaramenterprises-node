@@ -26,6 +26,11 @@ export const metadata: Metadata = {
   description: 'Gangaram Enterprises provides home interior design, modular kitchen solutions and premium furniture in Metpalle, Jagtial, Telangana. Contact us for custom designs and installation.',
   keywords: 'home interiors, modular kitchens, furniture, home theatre, Metpalle, Telangana',
   authors: [{ name: 'Aravind Reddy', url: 'https://gangaramenterprises.in' }],
+  icons: {
+    icon: '/favicon.ico',              // browser tab
+    shortcut: '/favicon.ico',
+    apple: '/apple-touch-icon.png',    // iOS
+  },
   openGraph: {
     title: 'Gangaram Enterprises – Home Interiors & Furniture',
     description: 'Premium home interiors, modular kitchens, furniture and decor services in Metpalle, Telangana.',
