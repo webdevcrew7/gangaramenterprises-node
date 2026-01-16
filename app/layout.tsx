@@ -9,6 +9,7 @@ import CartDrawer from '@/components/CartDrawer'
 import Toast from '@/components/Toast'
 import { CartProvider } from '@/contexts/CartContext'
 import { CategoryProvider } from '@/contexts/CategoryContext'
+import Script from 'next/script';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -49,6 +50,23 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-3SH2V7HNTR"
+          strategy="afterInteractive"
+        />
+
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-3SH2V7HNTR');
+          `}
+        </Script>
+
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
