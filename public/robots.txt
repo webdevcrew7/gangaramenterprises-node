@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://gangaramenterprises.com/sitemap.xml
+Sitemap: https://gangaramenterprises.in/sitemap.xml
 
 # Disallow admin pages from indexing
 Disallow: /admin/

@@ -3,6 +3,29 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Our Services | Gangaram Enterprises',
   description: 'Explore our services - Modular Kitchens, Home Interiors, Home Theatre, Furniture at Gangaram Enterprises.',
+  keywords: 'services Gangaram Enterprises, modular kitchens, home interiors, furniture services, home theatre Metpalle',
+  openGraph: {
+    title: 'Our Services | Gangaram Enterprises',
+    description: 'Explore our services - Modular Kitchens, Home Interiors, Home Theatre, Furniture at Gangaram Enterprises.',
+    url: 'https://gangaramenterprises.in/services',
+    images: [
+      {
+        url: 'https://gangaramenterprises.in/assets/gangaram-enterprises-logo.png',
+        width: 1200,
+        height: 630,
+        alt: 'Gangaram Enterprises Services',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Our Services | Gangaram Enterprises',
+    description: 'Explore our services - Modular Kitchens, Home Interiors, Home Theatre, Furniture at Gangaram Enterprises.',
+    images: ['https://gangaramenterprises.in/assets/gangaram-enterprises-logo.png'],
+  },
+  alternates: {
+    canonical: 'https://gangaramenterprises.in/services',
+  },
 }
 
 export default function ServicesPage() {

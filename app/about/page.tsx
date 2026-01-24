@@ -3,6 +3,29 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'About Us | Gangaram Enterprises – Home Interiors & Furniture',
   description: 'Learn about Gangaram Enterprises - Premium home interiors, furniture, and modular kitchen solutions in Metpalle, Jagtial, Telangana. Led by Aravind Reddy.',
+  keywords: 'about Gangaram Enterprises, home interiors company, furniture business Metpalle, Aravind Reddy',
+  openGraph: {
+    title: 'About Us | Gangaram Enterprises',
+    description: 'Learn about Gangaram Enterprises - Premium home interiors, furniture, and modular kitchen solutions in Metpalle, Telangana.',
+    url: 'https://gangaramenterprises.in/about',
+    images: [
+      {
+        url: 'https://gangaramenterprises.in/assets/gangaram-enterprises-logo.png',
+        width: 1200,
+        height: 630,
+        alt: 'Gangaram Enterprises About Us',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About Us | Gangaram Enterprises',
+    description: 'Learn about Gangaram Enterprises - Premium home interiors, furniture, and modular kitchen solutions in Metpalle, Telangana.',
+    images: ['https://gangaramenterprises.in/assets/gangaram-enterprises-logo.png'],
+  },
+  alternates: {
+    canonical: 'https://gangaramenterprises.in/about',
+  },
 }
 
 export default function AboutPage() {

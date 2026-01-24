@@ -3,6 +3,29 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Contact Us | Gangaram Enterprises',
   description: 'Contact Gangaram Enterprises for home interiors, furniture, and modular kitchens in Metpalle, Jagtial, Telangana. Call Aravind Reddy.',
+  keywords: 'contact Gangaram Enterprises, home interiors contact, furniture contact Metpalle, Aravind Reddy contact',
+  openGraph: {
+    title: 'Contact Us | Gangaram Enterprises',
+    description: 'Contact Gangaram Enterprises for home interiors, furniture, and modular kitchens in Metpalle, Telangana.',
+    url: 'https://gangaramenterprises.in/contact',
+    images: [
+      {
+        url: 'https://gangaramenterprises.in/assets/gangaram-enterprises-logo.png',
+        width: 1200,
+        height: 630,
+        alt: 'Gangaram Enterprises Contact',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Contact Us | Gangaram Enterprises',
+    description: 'Contact Gangaram Enterprises for home interiors, furniture, and modular kitchens in Metpalle, Telangana.',
+    images: ['https://gangaramenterprises.in/assets/gangaram-enterprises-logo.png'],
+  },
+  alternates: {
+    canonical: 'https://gangaramenterprises.in/contact',
+  },
 }
 
 export default function ContactPage() {

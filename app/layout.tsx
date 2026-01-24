@@ -37,6 +37,23 @@ export const metadata: Metadata = {
     description: 'Premium home interiors, modular kitchens, furniture and decor services in Metpalle, Telangana.',
     type: 'website',
     url: 'https://gangaramenterprises.in',
+    images: [
+      {
+        url: 'https://gangaramenterprises.in/assets/gangaram-enterprises-logo.png',
+        width: 1200,
+        height: 630,
+        alt: 'Gangaram Enterprises Logo',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Gangaram Enterprises – Home Interiors & Furniture',
+    description: 'Premium home interiors, modular kitchens, furniture and decor services in Metpalle, Telangana.',
+    images: ['https://gangaramenterprises.in/assets/gangaram-enterprises-logo.png'],
+  },
+  alternates: {
+    canonical: 'https://gangaramenterprises.in',
   },
 }
 

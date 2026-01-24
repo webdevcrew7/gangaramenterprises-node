@@ -12,6 +12,19 @@ A modern, production-ready Next.js website for Gangaram Enterprises, a premium h
 - 🔧 **TypeScript** - Full type safety throughout the application
 - 🎭 **Component Based** - Modular, reusable React components
 
+## SEO Optimization
+
+To enhance the SEO of the Gangaram Enterprises website, we have implemented the following strategies:
+
+- **Meta Tags**: Each page includes relevant meta tags for better indexing by search engines.
+- **Semantic HTML**: The use of semantic HTML elements improves accessibility and search engine understanding.
+- **Optimized Fonts**: Fonts are optimized for faster loading times, contributing to better user experience and SEO rankings.
+- **Structured Data**: Implemented structured data to help search engines understand the content better.
+- **Sitemap**: A sitemap is generated to assist search engines in crawling the website effectively.
+- **Robots.txt**: Proper configuration of robots.txt to guide search engine crawlers.
+
+These practices ensure that the website is not only user-friendly but also ranks well in search engine results.
+
 ## Tech Stack
 
 - **Framework**: Next.js 14 (App Router)
