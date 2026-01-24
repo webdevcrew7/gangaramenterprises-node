@@ -56,7 +56,9 @@ export default function Footer() {
             <a href="https://wa.me/919640044469" target="_blank" rel="noopener noreferrer">
               <i className="fa-brands fa-whatsapp text-lg hover:text-green-500 cursor-pointer"></i>
             </a>
+            <a href="https://www.instagram.com/gangaram_enterprises?igsh=MTZtbDFpbWRoZzlpeg==" target="_blank" rel="noopener noreferrer">
             <i className="fa-brands fa-instagram text-lg hover:text-pink-500 cursor-pointer"></i>
+            </a>
           </div>
         </div>
       </div>
