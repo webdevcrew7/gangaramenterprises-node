@@ -50,6 +50,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <link rel="canonical" href="https://gangaramenterprises.in/" />
 
         {/* Google Analytics */}
         <Script
