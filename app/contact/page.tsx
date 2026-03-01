@@ -34,10 +34,10 @@ export default function ContactPage() {
       {/* Hero */}
       <section className="relative min-h-[50vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img 
+          <img
             src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2000&auto=format&fit=crop"
-            alt="Contact" 
-            className="w-full h-full object-cover" 
+            alt="Contact"
+            className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-royal-700/80 to-royal-600/60"></div>
         </div>
@@ -55,9 +55,8 @@ export default function ContactPage() {
             {/* Contact Info */}
             <div>
               <span className="text-gold-600 font-semibold tracking-wider text-sm uppercase">Reach Out</span>
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-black mt-2 mb-6">Let&apos;s Discuss Your Project</h2>
-              <p className="text-slate-600 mb-8">Ready to transform your space? Contact us today for a free
-                consultation. We&apos;re here to help bring your vision to life.</p>
+              <h2 className="font-serif text-3xl md:text-4xl font-bold text-black mt-2 mb-6">Let&apos;s Bring Your Vision to Life</h2>
+              <p className="text-slate-600 mb-8 text-lg">Whether you are looking to redesign a single room or transform your entire home, our expert team is here to help. Reach out to schedule your complimentary consultation and take the first step toward your dream interior.</p>
 
               <div className="space-y-6">
                 {/* Phone */}
@@ -131,10 +130,10 @@ export default function ContactPage() {
               <div className="bg-gray-100 rounded-xl overflow-hidden shadow-lg h-[300px]">
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15165.844!2d78.92!3d18.80!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bccebd9e6f6b3b7%3A0x9e7c3ba2b4b3b3b!2sMetpalle%2C%20Telangana!5e0!3m2!1sen!2sin!4v1234567890"
-                  width="100%" 
-                  height="100%" 
-                  style={{ border: 0 }} 
-                  allowFullScreen 
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
                   loading="lazy"
                   className="grayscale hover:grayscale-0 transition-all duration-500"
                 ></iframe>
@@ -164,8 +163,7 @@ export default function ContactPage() {
                   <i className="fa-solid fa-lightbulb text-gold-600"></i>
                   Free Consultation
                 </h3>
-                <p className="text-slate-600 text-sm">Book a free consultation and site visit. We&apos;ll assess your
-                  space and provide a detailed quote tailored to your needs and budget.</p>
+                <p className="text-slate-600 text-sm leading-relaxed">Book a personalized consultation and professional site visit. Our interior experts will carefully assess your space, understand your lifestyle requirements, and provide a comprehensive, tailored proposal that perfectly aligns with your aesthetic preferences and budget.</p>
               </div>
             </div>
           </div>
