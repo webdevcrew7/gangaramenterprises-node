@@ -54,7 +54,7 @@ export default function ContactPage() {
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Contact Info */}
             <div>
-              <span className="text-gold-600 font-semibold tracking-wider text-sm uppercase">Reach Out Gangaram Enterprises</span>
+              <span className="text-gold-600 font-semibold tracking-wider text-sm uppercase">Reach Out</span>
               <h2 className="font-serif text-3xl md:text-4xl font-bold text-black mt-2 mb-6">Let&apos;s Bring Your Vision to Life</h2>
               <p className="text-slate-600 mb-8 text-lg">Whether you are looking to redesign a single room or transform your entire home, our expert team is here to help. Reach out to schedule your complimentary consultation and take the first step toward your dream interior.</p>
 
