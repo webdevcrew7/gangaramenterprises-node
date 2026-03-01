@@ -6,7 +6,7 @@ import TestimonialSection from '@/components/TestimonialSection'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Gangaram Enterprises – Home Interiors, Furniture & Modular Kitchens',
+  title: 'Gangaram  – Home Interiors, Furniture & Modular Kitchens',
   description: 'Discover premium home interiors, modular kitchens, furniture, and home theatre solutions at Gangaram Enterprises in Metpalle, Telangana. Custom designs and expert installation.',
   keywords: 'home interiors, modular kitchens, furniture, home theatre, Metpalle, Telangana, Gangaram Enterprises',
   openGraph: {
