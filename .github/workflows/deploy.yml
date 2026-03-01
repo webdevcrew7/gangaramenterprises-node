@@ -21,7 +21,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             cd ${{ secrets.SERVER_PATH }}
-            git pull origin production
+            # git pull origin production
             npm ci
             npm run build
             pm2 reload gangaram --update-env
